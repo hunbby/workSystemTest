@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="week">
+<!-- 리스트 -->
+        <select id="weekGetDtl"  parameterType="com.kimi.workstm.work.domain.WeekDtlVO" resultType="com.kimi.workstm.work.domain.WeekDtlVO">
+			SELECT B.*
+			FROM 
+			    (
+			        SELECT A.*
+			        FROM 
+			            (   
+			            SELECT 
+			                ROW_NUMBER() OVER (ORDER BY a.WEEK_CODE ASC) SEQ_NO
+			                ,a.WEEK_CODE
+			                ,a.PJT_CODE
+			                ,a.USER_CODE
+			                ,c.USER_NM
+			                ,a.DEPT_CODE
+			                ,a.EP_CODE
+			                ,a.EP_MGMT_NM
+			                ,a.WEEK_DAY
+			                ,a.ISSUE
+			                ,b.PJT_NM
+			                , TO_CHAR(a.RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS  RGST_DAY
+			            FROM WORK_MGMT a, PJT_MGMT b, USER_MGMT c
+			            WHERE a.PJT_CODE = b.PJT_CODE
+			            AND a.USER_CODE = c.USER_CODE
+			            
+						<if test="userAuth lte '100'">
+						AND c.USER_CODE = #{userCode}
+						</if>
+			            
+<!--  			      		AND c.USER_CODE = #{userCode} -->
+			              ORDER BY SEQ_NO DESC
+			            ) A
+			    ) B
+        </select>
+
+        <select id="weekRgst" resultType="com.kimi.workstm.work.domain.WeekDtlVO">
+            SELECT
+               WEEK_DAY             
+             , USER_CODE
+             , DEPT_CODE
+             , PJT_CODE
+             , EP_CODE
+             , EP_MGMT_NM
+             , CONTENT
+             , ISSUE
+             , RGST_DAY
+            FROM WORK_MGMT
+        </select>           
+
+ <!--  등  록    -->
+        <insert id="weekWrite" parameterType="com.kimi.workstm.work.domain.WeekDtlVO">
+        INSERT INTO WORK_MGMT
+            (
+              WEEK_CODE
+            , WEEK_DAY
+            , USER_CODE	
+            , DEPT_CODE 
+            , PJT_CODE
+            , EP_CODE		
+            , EP_MGMT_NM			
+            , CONTENT	
+            , ISSUE	
+            , RGST_DAY
+
+            )
+            VALUES
+            (
+                'WK'||lpad(WK_SEQ.nextval,5,0)
+                , #{weekDay, jdbcType=VARCHAR}
+                , #{userCode, jdbcType=VARCHAR}
+                , #{deptCode, jdbcType=VARCHAR} 
+                , #{pjtCode, jdbcType=VARCHAR} 
+                , #{epCode, jdbcType=VARCHAR} 
+                , #{epMgmtNm, jdbcType=VARCHAR} 
+                , #{content, jdbcType=VARCHAR} 
+                , #{issue, jdbcType=VARCHAR} 
+                ,  SYSTIMESTAMP
+            )     
+        </insert>
+
+    <!-- 조 회-->
+	<select id="weekDetail"  parameterType="com.kimi.workstm.work.domain.WeekDtlVO" resultType="com.kimi.workstm.work.domain.WeekDtlVO">
+			SELECT
+             a.WEEK_CODE                    as weekCode
+            , a.PJT_CODE                    as pjtCode
+            , a.USER_CODE                   as userCode
+            , a.WEEK_DAY                    as weekDay
+            , a.DEPT_CODE                   as deptCode
+            , a.EP_CODE                    as epCode
+            , b.PJT_NM                      as pjtNm
+            , b.PJT_TERM_FROM				as pjtTermFrom
+            , b.PJT_TERM_TO					as pjtTermTo
+            , a.EP_MGMT_NM			        as epMgmtNm
+            , a.CONTENT	                    as content
+            , a.ISSUE	                    as issue
+			 FROM WORK_MGMT a,  PJT_MGMT b
+             WHERE a.PJT_CODE = b.PJT_CODE
+             AND WEEK_CODE = #{weekCode}
+	</select>
+
+    <!-- 정보 수정 쿼리 -->
+    <update id="weekUpdate" parameterType="com.kimi.workstm.work.domain.WeekDtlVO">
+		UPDATE WORK_MGMT 
+		SET   WEEK_CODE                = #{weekCode}
+            , WEEK_DAY                 = #{weekDay}
+            , USER_CODE	               = #{userCode}
+            , DEPT_CODE                = #{deptCode}
+            , PJT_CODE                 = #{pjtCode}
+            , EP_CODE		           = #{epCode}
+            , EP_MGMT_NM			   = #{epMgmtNm}
+            , CONTENT	               = #{content}
+            , ISSUE	                   = #{issue}
+            , RGST_DAY          = SYSTIMESTAMP
+		WHERE WEEK_CODE = #{weekCode}
+	</update>
+
+	<!-- 정보 삭제 쿼리 -->
+	<update id="weekDelete" parameterType="hashmap">
+		DELETE WORK_MGMT 
+		WHERE
+		    WEEK_CODE = #{weekCode, jdbcType=VARCHAR}
+	</update> 
+</mapper>
+
+

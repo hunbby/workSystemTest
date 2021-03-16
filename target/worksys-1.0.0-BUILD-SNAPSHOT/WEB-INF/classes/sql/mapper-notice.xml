@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+<!-- 리스트 -->
+        <select id="noticeGetDtl" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+            SELECT
+                 IDX                as idx
+                , USER_CODE 		as userCode    
+                , SUBJECT		    as subject	
+                , RGST_DAY		    as rgstDay
+            FROM NOTICE
+            ORDER BY RGST_DAY DESC
+        </select>
+
+         <select id="noticeRgst" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+            SELECT
+                 IDX                as idx
+                , USER_CODE 		as userCode    
+                , SUBJECT		    as subject	
+                , CONTENT           as content
+                , RGST_DAY		    as rgstDay
+            FROM NOTICE
+        </select>          
+
+
+         <!--  등  록    -->
+        <insert id="noticeWrite" parameterType="com.kimi.workstm.notice.domain.NoticeVO">
+            INSERT INTO NOTICE (
+                    IDX 
+                    ,  USER_CODE 
+                    ,  SUBJECT	
+                    ,  CONTENT
+                    ,  RGST_DAY	
+                ) VALUES (
+                    NOTICE_SEQ.NEXTVAL
+                    , #{userCode}
+                    , #{subject}
+                    , #{content}
+                    , TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+                )     
+        </insert>
+
+        
+<!-- 조          회-->
+	<select id="noticeDetail"  resultType="com.kimi.workstm.notice.domain.NoticeVO"  parameterType="com.kimi.workstm.notice.domain.NoticeVO" > <!-- 상세 vo -->
+			SELECT
+                 IDX                as idx
+                , USER_CODE 		as userCode    
+                , SUBJECT		    as subject	
+                , CONTENT           as content
+                , RGST_DAY		    as rgstDay
+			FROM NOTICE
+			WHERE IDX = #{idx}
+	</select>
+
+    <!-- 정보 수정 쿼리 -->
+    <update id="noticeUpdate" parameterType="com.kimi.workstm.notice.domain.NoticeVO">
+        UPDATE NOTICE 
+            SET IDX             = #{idx}
+            , USER_CODE         = #{userCode}
+            , SUBJECT           = #{subject}
+            , CONTENT           = #{ content}
+            , RGST_DAY          = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        WHERE IDX               = #{idx}
+    </update>
+
+
+    	<!-- 정보 삭제 쿼리 -->
+	<update id="noticeDelete" parameterType="hashmap">
+		DELETE NOTICE 
+		WHERE IDX = #{idx, jdbcType=VARCHAR}
+		
+	</update>
+</mapper>

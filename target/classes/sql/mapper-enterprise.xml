@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Enterprise">
+
+	<resultMap id="EnterpriseResult" type="EnterpriseVO">
+        <result property="epCode" column="EP_CODE" />
+        <result property="epNm" column="EP_NM" />
+        <result property="epMgmtNm" column="EP_MGMT_NM" />
+        <result property="state" column="STATE" />
+        <result property="rgstDay" column="RGST_DAY" />
+        <result property="seqNo" column="SEQ_NO" />
+	</resultMap>
+
+	<insert id="insertEnterprise" parameterType="EnterpriseVO">
+        INSERT INTO EP_MGMT (
+            EP_CODE,
+            EP_NM,
+            EP_MGMT_NM,
+            STATE,
+            RGST_DAY,
+            MODI_DT
+        ) 
+        VALUES (
+            TO_CHAR(SYSTIMESTAMP, 'YYMMDDHH24MISSFF5'),
+            #{epNm},
+            #{epMgmtNm},
+            #{state},
+            SYSDATE,
+            SYSTIMESTAMP
+        )
+	</insert>
+
+    <select id="listEnterprise" resultMap="EnterpriseResult" parameterType="map">
+	    SELECT 
+			 SEQ_NO
+            , EP_CODE
+            , EP_NM
+            , EP_MGMT_NM
+            , RGST_DAY
+		FROM 
+		(
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY RGST_DAY) SEQ_NO,
+            EP_CODE ,
+            EP_NM ,
+            EP_MGMT_NM ,
+            TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS  RGST_DAY 
+        FROM EP_MGMT
+		)
+		WHERE SEQ_NO BETWEEN #{pageStart} AND #{pageEnd}
+		ORDER BY SEQ_NO DESC
+    </select>
+    
+    <select id="listEnterpriseCnt" resultType="int">
+    	SELECT
+            COUNT(*)
+        FROM EP_MGMT
+    </select>
+
+    <select id="getEnterpriseInfo"  parameterType="EnterpriseVO" resultMap="EnterpriseResult">
+          SELECT
+            EP_CODE,
+            EP_NM,
+            EP_MGMT_NM,
+            STATE
+        FROM EP_MGMT
+        WHERE EP_CODE = #{epCode}
+    </select>
+
+    <update id="updateEnterpriseInfo" parameterType="EnterpriseVO">
+        UPDATE EP_MGMT 
+        SET 
+            EP_CODE     = #{epCode},
+            EP_NM       = #{epNm},
+            EP_MGMT_NM  = #{epMgmtNm},
+            STATE       = #{state},
+            MODI_DT     = SYSTIMESTAMP
+        WHERE EP_CODE 	= #{epCode}
+    </update>
+
+    <delete id="deleteEnterpriseInfo" parameterType="EnterpriseVO">
+        DELETE 
+        FROM EP_MGMT
+        WHERE EP_CODE = #{epCode}
+    </delete>
+
+</mapper>

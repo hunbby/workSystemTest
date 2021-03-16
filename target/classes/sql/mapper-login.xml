@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Login">
+
+	<resultMap id="LoginResult" type="LoginVO">
+		<result property="userCode" 	column="USER_CODE" />
+		<result property="deptCode" 	column="DEPT_CODE" />
+		<result property="userNm" 		column="USER_NM" />
+		<result property="userID" 		column="USER_ID"/>
+		<result property="password" 	column="PASSWORD" />
+		<result property="position" 	column="POSITION" />
+		<result property="state" 		column="STATE" />
+	</resultMap>
+
+	<select id="loginCheck" parameterType="LoginVO" resultMap="LoginResult">
+        SELECT  USER_CODE, DEPT_CODE, POSITION, STATE, USER_ID, USER_NM, USER_AUTH
+        FROM    USER_MGMT
+        WHERE   USER_ID = #{userID}
+        AND     PASSWORD = #{password}
+	</select>
+
+</mapper>

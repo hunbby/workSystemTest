@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Projects">
+
+	<resultMap id="ProjectResult" type="ProjectVO">
+        <result property="pjtCode" column="PJT_CODE" />
+        <result property="epCode" column="EP_CODE" />
+        <result property="epNm" column="EP_NM" />
+        <result property="userCode" column="USER_CODE" />
+        <result property="epMgmtNm" column="EP_MGMT_NM" />
+        <result property="pjtNm" column="PJT_NM" />
+        <result property="pjtTermTo" column="PJT_TERM_TO" />
+        <result property="pjtTermFrom" column="PJT_TERM_FROM" />
+        <result property="rgstDay" column="RGST_DAY" />
+        <result property="userNm" column="USER_NM" />
+        <result property="pjtParti" column="PJT_PARTI" />
+        <result property="seqNo" column="SEQ_NO" />
+       
+	</resultMap>
+
+	<resultMap id="ProjectTerm" type="PjtTermVO">
+        <result property="title" column="TITLE" />
+        <result property="start" column="START" />
+        <result property="end" column="END" />
+        <result property="description" column="DESCRIPTION" />
+        <result property="issue" column="ISSUE" />
+	</resultMap>
+
+
+	<insert id="insertProject" parameterType="map">
+        INSERT INTO PJT_MGMT (
+            PJT_CODE
+            , EP_CODE
+            , USER_CODE
+            , PJT_NM
+            , PJT_TERM_TO
+            , PJT_TERM_FROM
+            , PJT_PARTI
+            , RGST_DAY
+            , MODI_DT
+        ) 
+        VALUES (
+            TO_CHAR(SYSTIMESTAMP, 'YYMMDDHH24MISSFF5')
+            , #{epCode}
+            , #{userCode}
+            , #{pjtNm}
+            , #{pjtTermTo}
+            , #{pjtTermFrom}
+            , #{pjtParti}
+            , SYSDATE
+            , SYSTIMESTAMP
+		)
+	</insert>
+
+    <select id="listProject" resultMap="ProjectResult" parameterType="map">
+	    SELECT 
+			 SEQ_NO
+			, PJT_CODE
+			, PJT_NM
+			, EP_NM
+			, EP_MGMT_NM
+			, USER_NM
+			, PJT_TERM_TO
+			, PJT_TERM_FROM
+			, RGST_DAY
+		FROM 
+		(
+		SELECT
+		    ROW_NUMBER() OVER(ORDER BY PJTMGMT.RGST_DAY) AS SEQ_NO
+		    , PJTMGMT.PJT_CODE
+		    , PJTMGMT.PJT_NM
+		    , EPMGMT.EP_NM
+		    , EPMGMT.EP_MGMT_NM
+		    , USERMGMT.USER_NM
+		    , TO_CHAR(TO_DATE(PJTMGMT.PJT_TERM_TO,'YYYYMMDD'),'YYYY-MM-DD') AS PJT_TERM_TO
+		    , TO_CHAR(TO_DATE(PJTMGMT.PJT_TERM_FROM,'YYYYMMDD'),'YYYY-MM-DD') AS PJT_TERM_FROM
+		    , TO_CHAR(PJTMGMT.RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS  RGST_DAY
+		FROM PJT_MGMT PJTMGMT, EP_MGMT EPMGMT, USER_MGMT USERMGMT
+		WHERE PJTMGMT.EP_CODE = EPMGMT.EP_CODE
+		AND PJTMGMT.USER_CODE = USERMGMT.USER_CODE
+		<if test="userAuth lte '100'">
+			AND USERMGMT.USER_CODE = #{userCode}
+        </if>
+		)
+		WHERE SEQ_NO BETWEEN #{pageStart} AND #{pageEnd}
+		ORDER BY SEQ_NO DESC
+    </select>
+    
+    <select id="listProjectCnt" resultType="int" parameterType="map">
+		SELECT
+            COUNT(*)
+		FROM PJT_MGMT PJTMGMT, EP_MGMT EPMGMT, USER_MGMT USERMGMT
+		WHERE PJTMGMT.EP_CODE = EPMGMT.EP_CODE
+		AND PJTMGMT.USER_CODE = USERMGMT.USER_CODE
+		<if test="userAuth lte '100'">
+			AND USERMGMT.USER_CODE = #{userCode}
+		</if>
+    </select>
+
+    <select id="getProjectInfo"  parameterType="ProjectVO" resultMap="ProjectResult">
+        SELECT 
+            a.PJT_CODE
+            , a.PJT_NM
+            , a.EP_CODE
+            , b.EP_NM
+            , b.EP_MGMT_NM
+            , c.USER_NM
+            , a.USER_CODE
+            , TO_CHAR(TO_DATE(a.PJT_TERM_TO,'YYYYMMDD'),'YYYY-MM-DD') AS PJT_TERM_TO
+            , TO_CHAR(TO_DATE(a.PJT_TERM_FROM,'YYYYMMDD'),'YYYY-MM-DD') AS PJT_TERM_FROM
+            , a.PJT_PARTI
+            , TO_CHAR(a.RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS  RGST_DAY
+        FROM PJT_MGMT a, EP_MGMT b, USER_MGMT c
+        WHERE a.EP_CODE = b.EP_CODE
+        AND a.USER_CODE = c.USER_CODE
+        AND a.PJT_CODE = #{pjtCode}
+    </select>
+
+    <update id="updateProjectInfo" parameterType="java.util.HashMap">
+        UPDATE PJT_MGMT SET 
+            EP_CODE         = #{epCode},
+            USER_CODE       = #{userCode},
+            PJT_NM          = #{pjtNm},
+            PJT_TERM_TO     = #{pjtTermTo},
+            PJT_TERM_FROM   = #{pjtTermFrom},
+            PJT_PARTI		= #{pjtParti},
+            MODI_DT			= SYSTIMESTAMP
+        WHERE PJT_CODE      = #{pjtCode}
+    </update>
+
+    <delete id="deleteProjectInfo" parameterType="java.util.HashMap">
+        DELETE FROM PJT_MGMT WHERE PJT_CODE = #{pjtCode}
+    </delete>
+    
+    <select id="pjtTerms" parameterType="UserVO" resultMap="ProjectTerm">
+		SELECT 
+			WORKMGMT.WEEK_DAY AS "START"
+			, PJTMGMT.PJT_NM AS "TITLE"
+			, WORKMGMT.CONTENT AS "DESCRIPTION"
+			, WORKMGMT.ISSUE AS "ISSUE"
+		FROM WORK_MGMT WORKMGMT, PJT_MGMT PJTMGMT, USER_MGMT USERMGMT
+		WHERE WORKMGMT.PJT_CODE = PJTMGMT.PJT_CODE
+		AND WORKMGMT.USER_CODE = USERMGMT.USER_CODE
+		AND USERMGMT.USER_CODE = #{userCode}
+    </select>
+
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dept">
+
+	<resultMap id="TreeResult" type="TreeVO">
+        <result property="key" column="KEY" />
+        <result property="title" column="TITLE" />
+        <result property="parent" column="PARENT" />
+        <result property="isFolder" column="IS_FOLDER" />
+        <result property="children" column="CHILDREN" />
+	</resultMap>
+	
+	<resultMap id="DeptResult" type="DeptVO">
+        <result property="deptCode" column="DEPT_CODE" />
+        <result property="deptNm" column="DEPT_NM" />
+        <result property="rgstDay" column="RGST_DAY" />
+        <result property="deptLV" column="DEPT_LV" />
+        <result property="deptParent" column="DEPT_PARENT" />
+        <result property="deptRemarks" column="DEPT_REMARKS" />
+	</resultMap>
+
+	<select id="deptTreeGrid" resultMap="TreeResult">
+		SELECT 
+			DEPT_CODE AS KEY,
+			DEPT_NM AS TITLE,
+			DEPT_PARENT AS PARENT
+		FROM DEPT_MGMT
+		ORDER BY DEPT_NM
+	</select>
+	
+  	<select id="deptParentInfo" resultMap="DeptResult">
+		SELECT DISTINCT
+			DEPT_CODE, 
+			DEPT_NM 
+		FROM DEPT_MGMT
+		ORDER BY DEPT_NM
+	</select> 
+	
+	<select id="deptInfo" parameterType="java.util.HashMap" resultMap="DeptResult">
+		SELECT 
+			DEPT_CODE
+			, DEPT_NM
+			, RGST_DAY
+			, DEPT_LV
+			, DEPT_PARENT
+			, DEPT_REMARKS
+		FROM DEPT_MGMT
+		WHERE DEPT_CODE = #{deptCode}
+	</select>
+	 	
+ 	<insert id="insertDeptInfo" parameterType="DeptVO">
+		INSERT INTO DEPT_MGMT (
+			DEPT_CODE
+			,DEPT_NM
+			,DEPT_LV
+			,DEPT_PARENT
+			,RGST_DAY
+			,DEPT_REMARKS
+			)
+		VALUES (
+			'DE'||lpad(DEPT_SEQ.nextval,4,0)
+			,#{deptNm}
+			,#{deptLV}
+			,#{deptParent}
+			,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+			,#{deptRemarks}
+			)
+	</insert>
+	
+	<delete id="deleteDept" parameterType="DeptVO">
+		DELETE FROM DEPT_MGMT 
+		WHERE DEPT_CODE = #{deptCode}
+	</delete>
+	
+	<update id="updateDeptUser" parameterType="DeptVO">
+		UPDATE USER_MGMT 
+		SET DEPT_CODE = 'DEPETC'
+		WHERE DEPT_CODE = #{deptCode}
+	</update> 
+	
+	<update id="updateDept" parameterType="DeptVO">
+        UPDATE DEPT_MGMT 
+        SET 
+            DEPT_CODE     	= #{deptCode},
+            DEPT_NM       	= #{deptNm},
+            DEPT_LV  		= #{deptLV},
+            DEPT_PARENT     = #{deptParent},
+            RGST_DAY    	= TO_CHAR(SYSDATE, 'YYYYMMDDHH24miss'),
+            DEPT_REMARKS 	= #{deptRemarks}
+        WHERE DEPT_CODE 	= #{deptCode}
+	</update>
+	
+ 	<delete id="deleteDeptList" parameterType="java.util.HashMap">
+		DELETE FROM DEPT_MGMT 
+		WHERE DEPT_CODE IN
+	    <foreach collection="deptCodeList" item="deptCodes" index="index"  open="(" close=")" separator=",">
+	    	#{deptCodes}
+	    </foreach>
+	</delete> 
+	
+	 <update id="updateDeptUserList" parameterType="java.util.HashMap">
+		UPDATE USER_MGMT 
+		SET DEPT_CODE = 'DEPETC'
+		WHERE DEPT_CODE IN
+	    <foreach collection="deptCodeList" item="deptCodes" index="index"  open="(" close=")" separator=",">
+		    #{deptCodes}
+	    </foreach>
+	</update> 
+</mapper>

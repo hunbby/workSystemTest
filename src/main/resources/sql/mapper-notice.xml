@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+<!-- 리스트 -->
+        <select id="noticeGetDtl" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+         SELECT B.*
+            FROM 
+                (
+                    SELECT A.*
+                    FROM 
+                        (   
+                        SELECT 
+                             ROW_NUMBER() OVER (ORDER BY a.RGST_DAY ASC) as SEQ_NO
+                            , a.IDX
+                            , a.USER_CODE
+                            , b.USER_NM
+                            , a.SUBJECT
+                            , a.CONTENT
+                            , TO_CHAR(a.RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS rgstDay
+                        FROM NOTICE a, USER_MGMT b
+                       WHERE a.USER_CODE = b.USER_CODE
+                        ORDER BY SEQ_NO DESC
+                        ) A
+                ) B
+                
+        </select>
+
+         <select id="noticeRgst" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+            SELECT
+                 IDX                as idx
+                , USER_CODE 		as userCode    
+                , SUBJECT		    as subject	
+                , CONTENT           as content
+                , TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS' )	    as rgstDay
+            FROM NOTICE
+        </select>          
+
+
+         <!--  등  록    -->
+        <insert id="noticeWrite" parameterType="com.kimi.workstm.notice.domain.NoticeVO">
+            INSERT INTO NOTICE (
+                    IDX 
+                    ,  USER_CODE 
+                    ,  SUBJECT	
+                    ,  CONTENT
+                    ,  RGST_DAY	
+                    ,  END_DAY
+                ) VALUES (
+                    NOTICE_SEQ.NEXTVAL
+                    , #{userCode}
+                    , #{subject}
+                    , #{content}
+                    , SYSTIMESTAMP
+                    , SYSTIMESTAMP
+                )     
+        </insert>
+
+        
+<!-- 조          회-->
+	<select id="noticeDetail"  resultType="com.kimi.workstm.notice.domain.NoticeVO"  parameterType="com.kimi.workstm.notice.domain.NoticeVO" > <!-- 상세 vo -->
+			SELECT
+                 IDX                as idx
+                , USER_CODE 		as userCode    
+                , SUBJECT		    as subject	
+                , CONTENT           as content
+                ,TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS' )	    as rgstDay	    
+			FROM NOTICE
+			WHERE IDX = #{idx}
+	</select>
+
+    <!-- 정보 수정 쿼리 -->
+    <update id="noticeUpdate" parameterType="com.kimi.workstm.notice.domain.NoticeVO">
+        UPDATE NOTICE 
+            SET 
+              SUBJECT           = #{subject}
+            , CONTENT           = #{ content}
+            , RGST_DAY          = SYSTIMESTAMP
+        WHERE IDX               = #{idx}
+    </update>
+
+
+   	<!-- 정보 삭제 쿼리 -->
+	<update id="noticeDelete" parameterType="hashmap">
+		DELETE NOTICE 
+		WHERE IDX = #{idx, jdbcType=VARCHAR}
+	</update>
+	
+	
+	
+	<!--  메인에서 공지사항 팝업 -->
+	<select id="popupNotice" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+     <![CDATA[
+      SELECT
+         IDX                as idx
+       , CONTENT           as content
+      FROM NOTICE
+      WHERE TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS' )  > TO_CHAR( END_DAY, 'YYYY-MM-DD HH24:MI:SS') 
+   	]]>
+    </select>          
+	
+</mapper>

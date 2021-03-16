@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member">
+
+	<resultMap id="UserResult" type="UserVO">
+		<result property="userCode" 	column="USER_CODE" />
+		<result property="deptCode" 	column="DEPT_CODE" />
+		<result property="deptNm" 		column="DEPT_NM" />
+		<result property="userNm" 		column="USER_NM" />
+		<result property="userID" 		column="USER_ID"/>
+		<result property="password" 	column="PASSWORD" />
+		<result property="position" 	column="POSITION" />
+		<result property="state" 		column="STATE" />
+		<result property="rgstDay" 		column="RGST_DAY" />
+		<result property="seqNo" 		column="SEQ_NO" />
+		<result property="userMail" 	column="USER_MAIL" />
+		<result property="userPhone" 	column="USER_PHONE" />
+		<result property="userAuth" 	column="USER_AUTH" />
+	</resultMap>
+
+	<select id="listUser" resultMap="UserResult" parameterType="map">
+	    SELECT 
+			 SEQ_NO
+            , USER_CODE
+            , DEPT_CODE
+            , USER_NM
+            , USER_ID
+            , POSITION
+            , STATE
+            , USER_MAIL
+            , USER_PHONE
+		FROM 
+		(
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY USERMGMT.MODI_DT ASC) SEQ_NO ,
+            USERMGMT.USER_CODE,
+            DEPTMGMT.DEPT_NM AS DEPT_CODE,
+            USERMGMT.USER_NM,
+            USERMGMT.USER_ID,
+            USERMGMT.POSITION,
+            USERMGMT.STATE,
+            USERMGMT.USER_MAIL,
+            USERMGMT.USER_PHONE
+        FROM USER_MGMT USERMGMT, DEPT_MGMT DEPTMGMT
+        WHERE USERMGMT.DEPT_CODE = DEPTMGMT.DEPT_CODE
+		)
+		WHERE SEQ_NO BETWEEN #{pageStart} AND #{pageEnd}
+		ORDER BY SEQ_NO DESC
+	</select>
+	
+	<select id="listUserCnt" resultType="int">
+		SELECT 
+			COUNT(*)
+        FROM USER_MGMT USERMGMT, DEPT_MGMT DEPTMGMT
+        WHERE USERMGMT.DEPT_CODE = DEPTMGMT.DEPT_CODE
+	</select>
+	
+	<select id="getDeptUserList" resultMap="UserResult" parameterType="map">
+	    SELECT 
+			 SEQ_NO
+            , USER_CODE
+            , DEPT_CODE
+            , USER_NM
+            , USER_ID
+            , POSITION
+            , STATE
+            , USER_MAIL
+            , USER_PHONE
+		FROM 
+		(
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY USERMGMT.MODI_DT ASC) SEQ_NO ,
+            USERMGMT.USER_CODE,
+            DEPTMGMT.DEPT_NM AS DEPT_CODE,
+            USERMGMT.USER_NM,
+            USERMGMT.USER_ID,
+            USERMGMT.POSITION,
+            USERMGMT.STATE,
+            USERMGMT.USER_MAIL,
+            USERMGMT.USER_PHONE
+        FROM USER_MGMT USERMGMT, DEPT_MGMT DEPTMGMT
+        WHERE USERMGMT.DEPT_CODE = DEPTMGMT.DEPT_CODE
+
+		<if test="deptCode != '' and deptCode != null">
+		AND USERMGMT.DEPT_CODE = #{deptCode}
+		</if>
+		        
+		<if test="deptParent != '' and deptParent != null">
+		AND DEPTMGMT.DEPT_PARENT = #{deptParent}
+		</if>
+		)
+		
+		<if test="pageEnd != '' and pageEnd != null">
+		WHERE SEQ_NO BETWEEN #{pageStart} AND #{pageEnd}
+		</if>
+		ORDER BY SEQ_NO DESC
+	</select>
+	
+	<select id="deptUserListCnt" resultType="int" parameterType="map">
+		SELECT 
+            COUNT(*)
+        FROM USER_MGMT USERMGMT, DEPT_MGMT DEPTMGMT
+        WHERE USERMGMT.DEPT_CODE = DEPTMGMT.DEPT_CODE
+        
+        <if test="deptCode != '' and deptCode != null">
+		AND USERMGMT.DEPT_CODE = #{deptCode}
+		</if>
+		        
+		<if test="deptParent != '' and deptParent != null">
+		AND DEPTMGMT.DEPT_PARENT = #{deptParent}
+		</if>
+	</select>
+	
+	<select id="getUser" parameterType="UserVO" resultMap="UserResult">
+        SELECT 
+            a.USER_CODE,
+            b.DEPT_NM,
+            b.DEPT_CODE,
+            a.USER_NM,
+            a.USER_ID,
+            a.POSITION,
+            a.STATE,
+            a.RGST_DAY,
+            a.USER_MAIL,
+            a.USER_PHONE,
+            a.USER_AUTH
+        FROM USER_MGMT a, DEPT_MGMT b
+        WHERE a.DEPT_CODE = b.DEPT_CODE
+		AND USER_CODE = #{userCode}
+	</select>
+
+	<insert id="userInsertInfo" parameterType="UserVO">
+		INSERT INTO USER_MGMT (
+			USER_CODE
+			, DEPT_CODE
+			, USER_NM
+			, USER_ID
+			, PASSWORD
+			, POSITION
+			, STATE
+			, RGST_DAY
+			, MODI_DT
+			, USER_MAIL
+			, USER_PHONE
+			, USER_AUTH
+		) 
+		VALUES (
+			TO_CHAR(SYSTIMESTAMP, 'YYMMDDHH24MISSFF5')
+			, #{deptCode}
+			, #{userNm}
+			, #{userID}
+			, #{password}
+			, #{position}
+			, #{state}
+			, SYSDATE
+			, SYSTIMESTAMP
+			, #{userMail}
+			, #{userPhone}
+			, #{userAuth}
+		)
+	</insert>
+	
+	<update id="updateUserInfo" parameterType="UserVO">
+		UPDATE USER_MGMT 
+        SET 
+            USER_CODE 	= #{userCode}
+            , DEPT_CODE = #{deptCode}
+            , USER_NM 	= #{userNm}
+            , USER_ID 	= #{userID}
+            
+            <if test="password != '' and password != null">
+            , PASSWORD 	= #{password} 
+            </if>
+            
+            , POSITION 	= #{position}
+            , STATE 	= #{state}
+            , USER_MAIL	= #{userMail}
+            , USER_PHONE = #{userPhone}
+            , MODI_DT	= SYSTIMESTAMP
+            , USER_AUTH = #{userAuth}
+        WHERE USER_CODE = #{userCode}
+	</update>
+	
+	<delete id="deleteuserInfo" parameterType="UserVO">
+		DELETE FROM USER_MGMT
+		WHERE USER_CODE = #{userCode}
+	</delete>
+
+	<select id="checkId" parameterType="UserVO" resultType="int">
+		SELECT COUNT(*)
+		FROM USER_MGMT
+		WHERE USER_ID = #{userID}
+	</select>
+</mapper>

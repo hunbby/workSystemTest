@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="week">
+<!-- 리스트 -->
+        <select id="weekGetDtl" resultType="com.kimi.workstm.work.domain.WeekDtlVO">
+            SELECT
+                 WEEK_CODE          as weekCode
+                , USER_CODE 		as userCode    
+                , CONTENT		    as content	
+                , RGST_DAY		    as rgstDay
+            FROM WORK_MGMT
+        </select>
+
+        <select id="weekRgst" resultType="com.kimi.workstm.work.domain.WeekDtlVO">
+            SELECT
+               WEEK_DAY             
+             , USER_CODE
+             , DEPT_CODE
+             , PJT_CODE
+             , EP_CODE
+             , EP_MGMT_NM
+             , CONTENT
+             , ISSUE
+             , RGST_DAY
+            FROM WORK_MGMT
+        </select>           
+
+
+ <!--  등  록    -->
+        <insert id="weekWrite" parameterType="com.kimi.workstm.work.domain.WeekDtlVO">
+        INSERT INTO WORK_MGMT
+            (
+              WEEK_CODE
+            , WEEK_DAY
+            , USER_CODE	
+            , DEPT_CODE 
+            ,  PJT_CODE
+            , EP_CODE		
+            , EP_MGMT_NM			
+            , CONTENT	
+            , ISSUE	
+            , RGST_DAY
+
+            )
+            VALUES
+            (
+                #{weekCode, jdbcType=VARCHAR}
+                , #{weekDay, jdbcType=VARCHAR}
+                , #{userCode, jdbcType=VARCHAR}
+                , #{deptCode, jdbcType=VARCHAR} 
+                , #{pjtCode, jdbcType=VARCHAR} 
+                , #{epCode, jdbcType=VARCHAR} 
+                , #{epMgmtNm, jdbcType=VARCHAR} 
+                , #{content, jdbcType=VARCHAR} 
+                , #{issue, jdbcType=VARCHAR} 
+                , sysDate 
+            )     
+        </insert>
+
+
+<!-- 조          회-->
+
+	<select id="weekDetail"  resultType="com.kimi.workstm.work.domain.WeekDtlVO" parameterType="com.kimi.workstm.work.domain.WeekDtlVO"> <!-- 상세 vo -->
+			SELECT
+            WEEK_CODE                   as weekCode
+            , WEEK_DAY                  as weekDay
+            , USER_CODE	                as userCode
+            , DEPT_CODE                 as deptCode
+            ,  PJT_CODE                 as pjtCode
+            , EP_CODE		            as epCode
+            , EP_MGMT_NM			    as epMgmtNm
+            , CONTENT	                as content
+            , ISSUE	                    as issue
+            , RGST_DAY                 as rgstDay
+			FROM
+				WORK_MGMT
+			WHERE
+				 WEEK_CODE = #{weekCode}		
+	</select>
+
+    <!-- 정보 수정 쿼리 -->
+    <update id="weekUpdate" parameterType="com.kimi.workstm.work.domain.WeekDtlVO">
+		UPDATE WORK_MGMT 
+		SET   WEEK_CODE                = #{weekCode}
+            , WEEK_DAY                 = #{weekDay}
+            , USER_CODE	               = #{userCode}
+            , DEPT_CODE                = #{deptCode}
+            , PJT_CODE                 = #{pjtCode}
+            , EP_CODE		           = #{epCode}
+            , EP_MGMT_NM			   = #{epMgmtNm}
+            , CONTENT	               = #{content}
+            , ISSUE	                   = #{issue}
+			, RGST_DAY  = sysDate
+		WHERE WEEK_CODE = #{weekCode}
+	</update>
+
+	<!-- 정보 삭제 쿼리 -->
+	<update id="weekDelete" parameterType="hashmap">
+		DELETE WORK_MGMT 
+		WHERE
+		    WEEK_CODE = #{weekCode, jdbcType=VARCHAR}
+		
+	</update> 
+</mapper>
+
+

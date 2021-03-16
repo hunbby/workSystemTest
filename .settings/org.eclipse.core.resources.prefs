@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/kimi/workstm/dept/service/serviceImpl/DeptSvcImpl.java=UTF-8
+encoding//src/main/resources/message/message.properties=UTF-8
+encoding//src/main/webapp/WEB-INF/views/common/error/error404.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/dept/deptMgmt.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/dept/popupDeptForm.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/enterprise/enterpriseForm.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/enterprise/enterpriseList.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/projects/projectForm.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/projects/projectList.jsp=UTF-8
+encoding/<project>=UTF-8
