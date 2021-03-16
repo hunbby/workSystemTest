@@ -13,7 +13,7 @@
 	</resultMap>
 
 	<select id="loginCheck" parameterType="LoginVO" resultMap="LoginResult">
-        SELECT  USER_CODE, DEPT_CODE, POSITION, STATE, USER_ID, USER_NM
+        SELECT  USER_CODE, DEPT_CODE, POSITION, STATE, USER_ID, USER_NM, USER_AUTH
         FROM    USER_MGMT
         WHERE   USER_ID = #{userID}
         AND     PASSWORD = #{password}

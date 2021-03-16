@@ -22,20 +22,15 @@
 	}
 </style>
 
-<script>
-	function fn_moveDate(date) {
-		$.ajax({
-			url : "moveDate",
-			type : "post",
-			data : {
-				date : date
-			},
-			success : function(result) {
-				$("#calenDiv").html(result);
-			}
-		})
-	}
-</script>
+<link href="/js/datepicker/datepicker.css" rel="stylesheet"
+	type="text/css">
+<script src="/js/datepicker/bootstrap-datepicker.js"></script>
+<script src="/js/datepicker/dayCalculation.js"></script>
+<script src="/js/dynatree/jquery.dynatree.js"></script>
+<script src="/js/projects/projectFunction.js"></script>
+<script src="/js/projects/projectFormFunction.js"></script>
+<!-- <script src="/js/formReset.js"></script> -->
+
 </head>
 <body>
     <div id="wrapper">
@@ -46,53 +41,42 @@
                 <div class="col-lg-12">
                     <h1 class="page-header"><i class="fa fa-gear fa-fw"></i> <s:message code="project.title"/></h1>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
             
-             <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-12">
-                  <button type="button" class="btn btn-default pull-right" onclick="fn_moveToURL('projectForm')">
-                  <i class="fa fa-edit fa-fw"></i> <s:message code="board.new"/></button>      
-            </div>
-            </div>
-            
-             <!-- /.row -->
-            <div class="panel panel-default"> 
-               <div class="panel-body ">
-               <div class="listHead">
-                  <div class="listHiddenField pull-left " style="width: 10%"><s:message code="project.cd"/></div>
-                  <div class="listHiddenField pull-right " style="width: 20%"><s:message code="board.date"/></div>
-                  <div class="listHiddenField pull-right " style="width: 20%"><s:message code="project.term"/></div>
-                  <div class="listHiddenField pull-right " style="width: 10%"><s:message code="project.usernm"/></div>
-                  <div class="listHiddenField pull-right " style="width: 10%"><s:message code="enterprise.prtitle"/></div>
-                  <div class="listTitle " style="width: 30%"><s:message code="project.prtitle"/></div>
-               </div>
-	          <c:if test="${listview.size()==0}">
-	            <div class="listBody height200">
-	            </div>
-	         </c:if>
-	         
-	         <c:forEach var="listview" items="${listview}" varStatus="status">
-				<c:url var="link" value="getProjectInfo">
-					<c:param name="pjtCode" value="${listview.pjtCode}" />
-				</c:url>
-	               
-	            <div class="listBody" ondblclick="location.href='${link}'">
-	               <div class="listHiddenField pull-left textCenter" style="width: 10%"><c:out value="${listview.pjtCode}"/></div>
-	               <div class="listHiddenField pull-right textCenter" style="width: 20%"><c:out value="${listview.rgstDay}"/></div>
-	               <div class="listHiddenField pull-right textCenter" style="width: 20%"><c:out value="${listview.pjtTermFrom} ~ ${listview.pjtTermTo}"/></div>
-	               <div class="listHiddenField pull-right textCenter" style="width: 10%"><c:out value="${listview.userNm}"/></div>
-	               <div class="listHiddenField pull-right textCenter" style="width: 10%"><c:out value="${listview.epNm}"/></div>
-	               <div class="listTitle textCenter" title="<c:out value=""/>" style="width: 30%"><c:out value="${listview.pjtNm}"/></div>
-	            </div>
-	            </c:forEach>
-               </div>  
-          </div>
-            
-            <form>
-            <!-- form -->
-            </form>
+            <div class="pjtMainContainer">
+		        <div class="row">
+			         <div class="col-lg-12">
+			               <button type="button" class="btn btn-default pull-right" id="pjtAdd">
+			               <i class="fa fa-edit fa-fw"></i> <s:message code="board.new"/></button>      
+			         </div>
+		         </div>
+		            
+		         <div class="panel panel-default"> 
+		             <div class="panel-body ">
+						<table class="pField100">
+							<thead>
+								<tr class="listHead">
+									<td class="listHiddenField pull-left pField5">No.</td>
+<%-- 								 	<td class="listHiddenField pull-left pField15"><s:message code="project.cd"/></td>  --%>
+									<td class="listHiddenField pull-left pField20"><s:message code="project.prtitle"/></td>
+									<td class="listHiddenField pull-left pField20"><s:message code="enterprise.prtitle"/></td>
+									<td class="listHiddenField pull-left pField10"><s:message code="project.usernm"/></td>
+									<td class="listHiddenField pull-left pField20"><s:message code="project.term"/></td>
+									<td class="listHiddenField pull-left pField20"><s:message code="board.date"/></td>
+								</tr>
+							</thead>
+
+							<tbody class="projectListContainer">
+							
+							</tbody>
+						</table>         
+		            </div>  
+		         </div>
+				 <div id="pjtPaging"></div>			
+			</div>
+			<div class="pjtFormContainer">
+				<jsp:include page="./projectForm.jsp" />
+			</div>
        </div> 
    </div>
 </body>

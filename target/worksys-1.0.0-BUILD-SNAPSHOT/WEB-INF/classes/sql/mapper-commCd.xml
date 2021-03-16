@@ -79,4 +79,14 @@
 		
 	</update> 
 
+
+
+    <!-- 아이디 중복체크 쿼리 -->
+    <select id="cdChk" parameterType="com.kimi.workstm.commCd.domain.CommCdVO" resultType="integer">
+    	SELECT COUNT(2)
+        FROM CMM_CD
+        WHERE cd_id = #{cdId}
+    </select>
+    
+
  </mapper>

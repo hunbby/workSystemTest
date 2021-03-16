@@ -42,6 +42,7 @@
 		<typeAlias alias="ProjectVO"		type="com.kimi.workstm.common.domain.ProjectVO"/>
 		<typeAlias alias="TreeVO"			type="com.kimi.workstm.common.utils.TreeVO"/>
 		<typeAlias alias="DeptVO"			type="com.kimi.workstm.common.domain.DeptVO"/>
+		<typeAlias alias="PjtTermVO"		type="com.kimi.workstm.common.domain.PjtTermVO"/>
 	</typeAliases>
 	
 </configuration>

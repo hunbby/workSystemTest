@@ -7,6 +7,7 @@
 	type="text/css">
 <script src="/js/datepicker/bootstrap-datepicker.js"></script>
 <script src="/js/datepicker/dayCalculation.js"></script>
+ <script src="/js/work/week.js"></script>
 <%-- <script src="//code.jquery.com/jquery.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
@@ -68,18 +69,22 @@
 			console.log(calMonthRange(day1,day2));
 		});
 	//프로젝트 명을 선택하였을때 팝업
-
-	$('#pjtCode').on('click', function() {
+	$('#pjtNm2').on('click', function() {
 		$.ajax({
 			url : '/work/popupProject', //html파일의 url
-			type : 'post'
+			type : 'post' ,
+			data : {
+				pageStart : 1
+			}
 		}).success(function(result) {
 			$('#popupProject').html(result);
 		});
 		$('#popupProject').modal('show');
 	});
-	
-	}
+
+ }
+
+
 </script>
 </head>
 <body>
@@ -101,58 +106,48 @@
  						<div class="panel panel-default">
 						<div class="panel-body">
 						
+						<input type="hidden" name="weekCode" id="weekCode" value="<c:out value="${list.weekCode}"/>">
+						<input type="hidden" name="userCode" id="userCode" value="<c:out value="${list.userCode}"/>">
+						<input type="hidden" name="pjtCode" id="pjtCode" value="<c:out value="${list.pjtCode}"/>">
+						<input type="hidden" name="epCode" id="epCode" value="<c:out value="${list.epCode}"/>">
+						
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.weekCode" /></label>
+							<label class="col-lg-2"><s:message code="crud.workDay" /> (*) </label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="weekCode" name="weekCode" maxlength="255"	value="${list.weekCode}" readonly>
-								</div>
-						</div>
-						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.day" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="prstartdate" name="weekDay" maxlength="255"	value="<c:out value="${list.weekDay}"/>">
-								</div>
-						</div>
-						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.userNm" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="userCode"	name="userCode" maxlength="255"	value="<c:out value="${list.userCode}"/>">
+									<input type="text" class="form-control" id="prstartdate" name="weekDay" size="16"	value="<c:out value="${list.weekDay}"/>" readonly>
 								</div>
 						</div>
 						
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.dept" /></label>
+							<label class="col-lg-2"><s:message code="project.prtitle" /> (*) </label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="deptCode" name="deptCode" maxlength="255"	value="<c:out value="${list.deptCode}"/>">
+									<input type="text" class="form-control" id="pjtNm2" name="pjtNm" maxlength="255" value="<c:out value="${list.pjtNm}"/>" readonly>
 								</div>
 						</div>
-						
+
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.pjtCode" /></label>
+							<label class="col-lg-2"><s:message code="project.usernm" /></label>
 								<div class="col-lg-8">
-									<input type="text"  class="form-control" id="pjtCode" name="pjtCode" maxlength="255"		value="<c:out value="${list.pjtCode}"/>" readonly>
-									
+									<input type="text" class="form-control" id="epMgmtNm"	name="epMgmtNm" maxlength="255"		value="<c:out value="${list.epMgmtNm}"/>"  readonly>
 								</div>
 						</div>
-						
+						 <div class="row form-group">
+				            	<label class="col-lg-2"><s:message code="project.term"/></label>
+				                 <div class="col-lg-8">
+									<input class="form-control" size="16" id="pjtTermFrom" name="pjtTermFrom" type="text " value=<c:out value="${list.pjtTermFrom} ~ ${list.pjtTermTo}"/>"  readonly>
+				                 </div>
+				          </div>
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.EpNm" /></label>
+							<label class="col-lg-2"><s:message code="crud.content" /> (*)</label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="epMgmtNm"	name="epMgmtNm" maxlength="255"		value="<c:out value="${list.epMgmtNm}"/>">
-								</div>
-						</div>
-						
-						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.content" /></label>
-								<div class="col-lg-8">
-									<textarea class="form-control" id="content" name="content"><c:out		value="${list.content}" /></textarea>
+									<textarea style="height: 150px;" class="form-control" id="content" name="content"><c:out value="${list.content}" /></textarea>
 								</div>
 						</div>
 						
 						<div class="row form-group">
 							<label class="col-lg-2"><s:message code="crud.issue" /></label>
 								<div class="col-lg-8">
-									<textarea class="form-control" id="crmemo" name="issue"><c:out	value="${list.issue}" /></textarea>
+									<textarea style="height: 150px;" class="form-control" id="issue" name="issue"><c:out value="${list.issue}" /></textarea>
 								</div>
 							</div>
 						</div> 
@@ -160,7 +155,7 @@
 					</div>
 					<input type="button" class="btn btn-outline btn-primary" 
 						onclick="location.href='/work/week'"value="목록">
-					<input type="submit" class="btn btn-outline btn-primary pull-right field60" value="수정">
+					<input type="button" class="btn btn-outline btn-primary pull-right field60" value="수정"  onclick="button_event()" id="eval">
 					<input type="button" class="btn btn-outline btn-primary pull-right field60" onclick="weekDelete()" value="삭제">
 				</form>
 
@@ -173,14 +168,20 @@
 	<!-- /#wrapper -->
 		<div id="popupProject" class="modal fade bs-example-modal-lg"
 		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
+		<div id="popupUser" class="modal fade bs-example-modal-lg"
+		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
 </body>
 
-	<script>
+	<script type="text/javascript">
 	function weekDelete(weekCode) {
+	 if (confirm("삭제하시겠습니까??") == true){ 
 		var form = $('#form1');
 		form.attr('action', '/work/weekDelete');
 		form.attr('method', 'POST');
 		form.submit();
+	  }else{   
+	      return;
+	  }		
 	}
 	
 	</script>

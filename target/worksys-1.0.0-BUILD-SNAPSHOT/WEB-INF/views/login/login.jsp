@@ -1,19 +1,9 @@
 <%@ include file="/WEB-INF/include/header.jsp" %>
 
 	<title>Login</title>
-
-
-<script>
-function fn_formSubmit(){
-	if ( ! chkInputValue("#userid", "<s:message code="common.id"/>")) return false;
-	if ( ! chkInputValue("#userpw", "<s:message code="common.password"/>")) return false;
-	
-	$("#form1").submit();
-}
-</script>
+	<script src="/js/login/login.js"></script>    
 </head>
 <body>
-${common.password}
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
@@ -28,15 +18,15 @@ ${common.password}
                                     <input class="form-control" placeholder="ID" name="userID" id="userid" type="email" autofocus value="<c:out value="${userid}"/>">
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" id="userpw" type="password" value="" onkeydown="if(event.keyCode == 13) { fn_formSubmit();}">
+                                    <input class="form-control" placeholder="Password" name="password" id="userpw" type="password" value="">
                                 </div>
-                                <div class="checkbox">
+<%--                                 <div class="checkbox">
                                     <label>
                                         <input name="remember" type="checkbox" value="Y"  <c:if test='${userid != null && userid != ""}'>checked</c:if>>Remember Me
                                     </label>
-                                </div>
+                                </div> --%>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <a href="#" class="btn btn-lg btn-success btn-block" onclick="fn_formSubmit()">Login</a>
+                                <a href="#" class="btn btn-lg btn-success btn-block" onkeydown="enterLogin(event)" onclick="login()">Login</a>
                             </fieldset>
                         </form>
                     </div>

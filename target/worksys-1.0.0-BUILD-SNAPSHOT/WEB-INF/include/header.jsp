@@ -25,5 +25,9 @@
 		
 		<link href="/js/dynatree/ui.dynatree.css" rel="stylesheet"/>
 		<script src="/js/jquery-ui.js"></script>
-		<script src="/js/dynatree/jquery.dynatree.js"></script>
+		<script src="/js/jquery-ui.js"></script>
+		<script src="/js/jquery.tmpl.js"></script>
+		<script src="/js/jquery.tmpl.min.js"></script>
+		<script src="/js/common/util.js"></script>
+		<script src="/js/common/jquery.bootpag.js"></script>
 

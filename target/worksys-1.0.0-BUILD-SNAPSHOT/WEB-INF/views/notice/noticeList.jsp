@@ -1,10 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/include/header.jsp"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-
 <%@ include file="/WEB-INF/include/header.jsp"%>
+
+<!-- script -->
+<script src="/js/notice/notice.js"></script>
+<!--  달력 -->
+<link href="/js/datepicker/datepicker.css" rel="stylesheet" type="text/css">
+<script src="/js/datepicker/bootstrap-datepicker.js"></script>
+<script src="/js/datepicker/dayCalculation.js"></script>
+<!--  ckeditor -->
+<script src="/js/ckeditor/ckeditor.js"></script>
+<!--  script -->
+
+
 <title>Project</title>
 
 <style>
@@ -28,6 +38,8 @@
 }
 </style>
 
+
+
 </head>
 <body>
 	<div id="wrapper">
@@ -44,61 +56,42 @@
 				<!-- /.col-lg-12 -->
 			</div>
 
-			<!-- /.row -->
-			<div class="row">
-				<div class="col-lg-12">
-					<button type="button" class="btn btn-default pull-right"
-						onclick="fn_moveToURL('noticeRgst')">
-						<i class="fa fa-edit fa-fw"></i>
-						<s:message code="board.new" />
-					</button>
+				<div class="noticeMain">
+					<!-- /.row -->
+					<div class="row">
+					<div class="col-lg-12">
+						<button type="button" class="btn btn-default pull-right"
+							onclick="fn_moveToURL('noticeRgst')" id="btnAdd">
+							<i class="fa fa-edit fa-fw"></i>
+							<s:message code="board.new" />
+						</button>
 				</div>
 			</div>
 
 			<!-- /.row -->
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<div class="listHead">
-						<div class="listHiddenField pull-left" style="width: 10%">
-							<s:message code="notice.idx" />
-						</div>
-						<div class="listHiddenField pull-right" style="width: 30%">
-							<s:message code="notice.prdate" />
-						</div>
-						<div class="listHiddenField pull-right" style="width: 30%">
-							<s:message code="notice.userCode" />
-						</div>
-
-						<div class="listTitle" style="width: 30%">
-							<s:message code="notice.subject" />
-						</div>
-					</div>
-
-					<c:forEach var="list" items="${list}" varStatus="status">
-						<div class="listBody">
-							<div class="listHiddenField pull-left" style="width: 10%">${list.idx}</div>
-							<c:url var="link" value="noticeDetail">
-								<c:param name="idx" value="${list.idx}" />
-							</c:url>
-							<div class="listHiddenField pull-right" style="width: 30%">${list.rgstDay}</div>
-							<div class="listHiddenField pull-right" style="width: 30%">${list.userCode}</div>
-
-							<div class="listTitle" style="width: 30%">
-								<a href="${link}"><c:out value="${list.subject}" /></a>
-							</div>
-						</div>
-					</c:forEach>
+					<table class="pField100">
+					<thead>
+						<tr class="listHead">
+							<td class="listHiddenField pull-left pField10">번호</td>
+							<td class="listHiddenField pull-left pField60">제목</td>
+							<td class="listHiddenField pull-left pField10">담당자이름</td>
+							<td class="listHiddenField pull-left pField20">작성일자</td>
+						</tr>
+					</thead>
+					<tbody class="noticeListContainer">
+					</tbody>
+					</table>
 				</div>
-			</div>
-
-			<c:if test="${listview.size()==0}">
-				<div class="listBody height200"></div>
-			</c:if>
-
-			<form>
-				<!-- form -->
-			</form>
+			</div>	
 		</div>
+		<div class="noticeForm" style="display: none">
+			<jsp:include page="noticeChg.jsp"></jsp:include>
+		</div>	
+		</div>
+		
 	</div>
+
 </body>
 </html>

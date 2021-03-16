@@ -2,9 +2,6 @@
     pageEncoding="UTF-8"%>
 
 
-<div style="border: 1px solid black;">
-	Footer 입니다.
-</div>
 
 </body>
 </html>

@@ -7,11 +7,8 @@
 	type="text/css">
 <script src="/js/datepicker/bootstrap-datepicker.js"></script>
 <script src="/js/datepicker/dayCalculation.js"></script>
-<%-- <script src="//code.jquery.com/jquery.min.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
- --%>
- <title><s:message code="common.pageTitle" /></title>
+<script src="/js/work/week.js"></script>
+<title><s:message code="common.pageTitle" /></title>
 
 <style>
 .col-gu {
@@ -54,9 +51,11 @@
 				$('#prstartdate').datepicker('hide');
 			}
 			var day1 = $("#prstartdate" ).datepicker().val();
-			var day2 =$("#prenddate" ).datepicker().val();
+			console.log(day1);
+			/* var day2 =$("#prenddate" ).datepicker().val();
+			console.log(day2);
 			$('#termD').attr('value',(calDateRange(day1,day2)+1));
-			console.log(calMonthRange(day1,day2));
+			console.log(calMonthRange(day1,day2)); */
 		});
 		$('#prenddate').datepicker().on('changeDate', function(ev) {
 			if (ev.viewMode == "days") {
@@ -69,10 +68,13 @@
 		});
 	//프로젝트 명을 선택하였을때 팝업
 
-	$('#pjtNm').on('click', function() {
+	$('#pjtNm2').on('click', function() {
 		$.ajax({
 			url : '/work/popupProject', //html파일의 url
-			type : 'post'
+			type : 'post' ,
+			data : {
+				pageStart : 1
+			}
 		}).success(function(result) {
 			$('#popupProject').html(result);
 		});
@@ -80,16 +82,18 @@
 	});
 	
 	
-	//작성자를 선택하였을때 팝업
-	$('#userCode').on('click', function() {
+/* 	//작성자를 선택하였을때 팝업
+	$('#epMgmtNm').on('click', function() {
 		$.ajax({
-			url : '/work/popupUser', //html파일의 url
+			url : '/work/popupProject', //html파일의 url
 			type : 'post'
 		}).success(function(result) {
-			$('#popupUser').html(result);
+			$('#popupProject').html(result);
 		});
-		$('#popupUser').modal('show');
-	});
+		$('#popupProject').modal('show');
+	}); */
+	
+
  }
 
 
@@ -113,60 +117,53 @@
 				<form id="form1" name="form1" role="form" action="/work/weekWrite" method="post">
 						<div class="panel panel-default">
 						<div class="panel-body">		
-<%-- 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.weekCode" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="weekCode" name="weekCode" maxlength="255"	value="<c:out value="${list.weekCode}"/>">
-								</div>
-						</div> --%>
+
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.day" /></label>
+							<label class="col-lg-2"><s:message code="crud.workDay" /> (*)</label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="prstartdate" name="weekDay" maxlength="255"	value="<c:out value="${list.weekDay}"/>">
+									<input type="text" class="form-control" id="prstartdate" name="weekDay" size="16"value="<c:out value="${list.weekDay}"/>" readonly>
 								</div>
 						</div>
-						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.userCode" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="userCode"	name="userCode" maxlength="255"	value="<c:out value="${list.userCode}"/>" readonly>
-								</div>
-						</div>
-						
 						<input type="hidden" name="userNm" id="userNm"> 
+						<input type="hidden" name="pjtCode" id="pjtCode" >
 						
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.dept" /></label>
+							<label class="col-lg-2"><s:message code="project.prtitle" /> (*) </label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="deptCode" name="deptCode" maxlength="255"	value="<c:out value="${list.deptCode}"/>">
+									<input type="text" class="form-control" id="pjtNm2" name="pjtNm" maxlength="255" value="" readonly>
 								</div>
 						</div>
+						
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.pjtCode" /></label>
+							<label class="col-lg-2"><s:message code="project.usernm" />  </label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="pjtNm" name="pjtNm" maxlength="255"		value="<c:out value="${list.pjtCode}"/>" readonly>
+									<input type="text" class="form-control" id="epMgmtNm"	name="epMgmtNm" maxlength="255"		value="<c:out value="${list.epMgmtNm}"/>"  readonly>
 								</div>
 						</div>
+				            <div class="row form-group">
+				            	<label class="col-lg-2"><s:message code="project.term"/></label>
+				                 <div class="col-lg-8">
+									<input class="form-control" size="16" id="pjtTermFrom" name="pjtTermFrom" type="text" value="" readonly>
+				                 </div>
+				            </div>
+						
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.EpNm" /></label>
+							<label class="col-lg-2"><s:message code="crud.content" /> (*)</label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="epMgmtNm"	name="epMgmtNm" maxlength="255"		value="<c:out value="${list.epMgmtNm}"/>">
-								</div>
-						</div>
-						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="crud.content" /></label>
-								<div class="col-lg-8">
-									<textarea class="form-control" id="content" name="content"><c:out		value="${list.content}" /></textarea>
+									<textarea style="height: 150px;" class="form-control" id="content" name="content"><c:out		value="${list.content}" /></textarea>
 								</div>
 						</div>
 						<div class="row form-group">
 							<label class="col-lg-2"><s:message code="crud.issue" /></label>
 								<div class="col-lg-8">
-									<textarea class="form-control" id="issue" name="issue"><c:out		value="${list.issue}" /></textarea>
+									<textarea style="height: 150px;"  class="form-control" id="issue" name="issue"><c:out		value="${list.issue}" /></textarea>
 								</div>
 						</div>
 					</div>	
 				</div>
-						<input type="submit" class="btn btn-outline btn-primary" value="등록">
+						<input type="button" class="btn btn-outline btn-primary" 
+							onclick="location.href='/work/week'"value="목록">
+						<input type="button" class="btn btn-outline btn-primary pull-right field60"  id="eval" value="등록" onclick="button_event2()">
 				</form>
 			</div>
 			<!-- /.row -->
@@ -178,5 +175,6 @@
 		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
 		<div id="popupUser" class="modal fade bs-example-modal-lg"
 		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
+		
 </body>
 </html>

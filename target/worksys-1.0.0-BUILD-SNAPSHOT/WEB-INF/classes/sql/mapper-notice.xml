@@ -4,13 +4,26 @@
 <mapper namespace="notice">
 <!-- 리스트 -->
         <select id="noticeGetDtl" resultType="com.kimi.workstm.notice.domain.NoticeVO">
-            SELECT
-                 IDX                as idx
-                , USER_CODE 		as userCode    
-                , SUBJECT		    as subject	
-                , RGST_DAY		    as rgstDay
-            FROM NOTICE
-            ORDER BY RGST_DAY DESC
+         SELECT B.*
+            FROM 
+                (
+                    SELECT A.*
+                    FROM 
+                        (   
+                        SELECT 
+                             ROW_NUMBER() OVER (ORDER BY a.RGST_DAY ASC) as SEQ_NO
+                            , a.IDX
+                            , a.USER_CODE
+                            , b.USER_NM
+                            , a.SUBJECT
+                            , a.CONTENT
+                            , TO_CHAR(a.RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS rgstDay
+                        FROM NOTICE a, USER_MGMT b
+                       WHERE a.USER_CODE = b.USER_CODE
+                        ORDER BY SEQ_NO DESC
+                        ) A
+                ) B
+                
         </select>
 
          <select id="noticeRgst" resultType="com.kimi.workstm.notice.domain.NoticeVO">
@@ -19,7 +32,7 @@
                 , USER_CODE 		as userCode    
                 , SUBJECT		    as subject	
                 , CONTENT           as content
-                , RGST_DAY		    as rgstDay
+                , TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS' )	    as rgstDay
             FROM NOTICE
         </select>          
 
@@ -32,12 +45,14 @@
                     ,  SUBJECT	
                     ,  CONTENT
                     ,  RGST_DAY	
+                    ,  END_DAY
                 ) VALUES (
                     NOTICE_SEQ.NEXTVAL
                     , #{userCode}
                     , #{subject}
                     , #{content}
-                    , TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+                    , SYSTIMESTAMP
+                    , SYSTIMESTAMP
                 )     
         </insert>
 
@@ -49,7 +64,7 @@
                 , USER_CODE 		as userCode    
                 , SUBJECT		    as subject	
                 , CONTENT           as content
-                , RGST_DAY		    as rgstDay
+                ,TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS' )	    as rgstDay	    
 			FROM NOTICE
 			WHERE IDX = #{idx}
 	</select>
@@ -57,19 +72,31 @@
     <!-- 정보 수정 쿼리 -->
     <update id="noticeUpdate" parameterType="com.kimi.workstm.notice.domain.NoticeVO">
         UPDATE NOTICE 
-            SET IDX             = #{idx}
-            , USER_CODE         = #{userCode}
-            , SUBJECT           = #{subject}
+            SET 
+              SUBJECT           = #{subject}
             , CONTENT           = #{ content}
-            , RGST_DAY          = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+            , RGST_DAY          = SYSTIMESTAMP
         WHERE IDX               = #{idx}
     </update>
 
 
-    	<!-- 정보 삭제 쿼리 -->
+   	<!-- 정보 삭제 쿼리 -->
 	<update id="noticeDelete" parameterType="hashmap">
 		DELETE NOTICE 
 		WHERE IDX = #{idx, jdbcType=VARCHAR}
-		
 	</update>
+	
+	
+	
+	<!--  메인에서 공지사항 팝업 -->
+	<select id="popupNotice" resultType="com.kimi.workstm.notice.domain.NoticeVO">
+     <![CDATA[
+      SELECT
+         IDX                as idx
+       , CONTENT           as content
+      FROM NOTICE
+      WHERE TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS' )  > TO_CHAR( END_DAY, 'YYYY-MM-DD HH24:MI:SS') 
+   	]]>
+    </select>          
+	
 </mapper>

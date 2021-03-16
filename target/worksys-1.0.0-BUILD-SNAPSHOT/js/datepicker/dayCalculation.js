@@ -9,19 +9,21 @@
         var FORMAT = "-";
 
         // FORMAT을 포함한 길이 체크
-        if (val1.length != 10 || val2.length != 10)
+        if (val1.length != 10 || val2.length != 10){
             return null;
+        }
 
         // FORMAT이 있는지 체크
-        if (val1.indexOf(FORMAT) < 0 || val2.indexOf(FORMAT) < 0)
+        if (val1.indexOf(FORMAT) < 0 || val2.indexOf(FORMAT) < 0){
             return null;
+        }
 
         // 년도, 월, 일로 분리
         var start_dt = val1.split(FORMAT);
         var end_dt = val2.split(FORMAT);
 
-        start_dt[1] = (Number(start_dt[1]) - 1) + "";
-        end_dt[1] = (Number(end_dt[1]) - 1) + "";
+        start_dt[1] = (Number(start_dt[1]) - 1);
+        end_dt[1] = (Number(end_dt[1]) - 1);
 
         var from_dt = new Date(start_dt[0], start_dt[1], start_dt[2]);
         var to_dt = new Date(end_dt[0], end_dt[1], end_dt[2]);
@@ -31,6 +33,6 @@
 
 
     function calMonthRange(val1, val2) {
-    	return calDateRange(val1, val2)/30;
+    	return Math.ceil(calDateRange(val1, val2) / 30);
     }
    

@@ -9,7 +9,7 @@
 		<script src="/js/datepicker/dayCalculation.js"></script>
 		<!--  ckeditor -->
 		<script src="/js/ckeditor/ckeditor.js"></script>
-	
+		<script src="/js/commCd/commCd.js"></script>
 		<!--  시작 -->
 		<title><s:message code="common.pageTitle" /></title>
 		<style>
@@ -32,10 +32,14 @@
 </style>
 	<script type="text/javascript">
 			function commCdDelete(cdId) {
-				var form = $('#form1');
-				form.attr('action', '/commCd/commCdDelete');
-				form.attr('method', 'POST');
-				form.submit();
+			 if (confirm("삭제하시겠습니까??") == true){  
+					var form = $('#form1');
+					form.attr('action', '/commCd/commCdDelete');
+					form.attr('method', 'POST');
+					form.submit();
+			  }else{   
+			      return;
+			  }		
 			}
 		</script>
 </head>
@@ -60,45 +64,45 @@
 					<div class="panel panel-default">
 						<div class="panel-body">
 	 						<div class="row form-group">
-								<label class="col-lg-2"><s:message code="commcd.cdId" /></label>
+								<label class="col-lg-2"><s:message code="commcd.cdId" /> (*) </label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control" id="cdId" name="cdId" maxlength="30"	value='<c:out value="${list.cdId}"/>' readonly>
 								</div>
 							</div> 
 							<div class="row form-group">
-								<label class="col-lg-2"><s:message code="commcd.cdNm" /></label>
+								<label class="col-lg-2"><s:message code="commcd.cdNm" /> (*) </label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control" id="cdNm" name="cdNm" maxlength="255"	value='<c:out value="${list.cdNm}"/>'>
 								</div>
 							</div>
 							<div class="row form-group">
-								<label class="col-lg-2"><s:message code="commcd.paCdId" /></label>
+								<label class="col-lg-2"><s:message code="commcd.paCdId" /> (*) </label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control" id="paCdId"	name="paCdId" maxlength="255"	value='<c:out value="${list.paCdId}"/>'>
 								</div>
 							</div>
 							<div class="row form-group">
-								<label class="col-lg-2"><s:message code="commcd.userF" /></label>
+								<label class="col-lg-2"><s:message code="commcd.userF" /> (*) </label>
 								<div class="col-lg-8">
 									<label class="radio-inline">
-										<input type="radio"	name="userF" value="0"
-											<c:if test="${list.userF==0}">checked</c:if>>
+										<input type="radio"	name="userF" value="0" checked="checked"
+											<c:if test="${list.userF==Y}"></c:if>>
 											<s:message code="commcd.status0" />
 									</label>
 									<label class="radio-inline">
 										<input type="radio" name="userF" value="1"
-											<c:if test="${list.userF==1}">checked</c:if>>
+											<c:if test="${list.userF==N}"></c:if>>
 											<s:message code="commcd.status1" />
 									</label> 
-									<!-- <input type="text" class="form-control" id="userF"	name="userF" maxlength="255"	value='<c:out value="${list.userF}"/>'>-->
+									
 								</div>
 							</div>
 							
 								<div class="row form-group">
-								<label class="col-lg-2"><s:message code="commcd.cdOrder" /></label>
+								<label class="col-lg-2"><s:message code="commcd.cdOrder" /> (*) </label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="cdOrder"
-										name="cdOrder" maxlength="255"
+									<input type="number" min="1"  max="30"  class="form-control" id="cdOrder"
+										name="cdOrder" maxlength="30"
 										value="<c:out value="${list.cdOrder}"/>">
 								</div>
 							</div>
@@ -107,7 +111,7 @@
 					</div>
 						
 					<input type="button" class="btn btn-outline btn-primary" onclick="location.href='/commCd/commCdList'"value="목록">
-					<input type="submit" class="btn btn-outline btn-primary pull-right field60" value="수정">
+					<input type="button" class="btn btn-outline btn-primary pull-right field60"  id="eval" onclick="button_event()" value="수정">
 					<input type="button" class="btn btn-outline btn-primary pull-right field60" onclick="commCdDelete()" value="삭제">
 				</form>
 

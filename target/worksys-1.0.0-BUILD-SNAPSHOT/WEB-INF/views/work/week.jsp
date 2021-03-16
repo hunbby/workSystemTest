@@ -3,9 +3,8 @@
 <%@ include file="/WEB-INF/include/header.jsp"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%@ include file="/WEB-INF/include/header.jsp"%>
 <title>week</title>
-
+<script src="/js/work/week.js"></script>
 <style>
 .col-gu {
 	float: left;
@@ -67,23 +66,26 @@ function fn_moveDate(date){
 			<div class="panel-body">
 				<div class="col-lg-12">
                     <div class="listHead">
-                          <div class="listHiddenField pull-left" style="width: 20%">코드</div>
+
+                          <div class="listHiddenField pull-left" style="width: 10%">번호</div> 
                           <div class="listHiddenField pull-right" style="width: 20%">등록일</div> 
-                          <div class="listHiddenField pull-right" style="width: 20%">작성자</div>
-                          <div class="listTitle" style="width: 40%">내용</div>
+                          <div class="listHiddenField pull-right" style="width: 20%">수행일자</div>
+                          <div class="listHiddenField pull-right" style="width: 20%">작성자명</div>
+                          <div class="listTitle" style="width: 20%">프로젝트명</div>
                     </div>
 					<c:choose>
 						<c:when test="${fn:length(list) > 0}">
 							<c:forEach var="list" items="${list}" varStatus="status">
-								<div class="listBody">
-									<div class="listHiddenField pull-left" style="width: 20%">${list.weekCode}</div>
+								<div class="listBody" id="dbClick" title="${list.weekCode}" ondblclick="test(this)">
+									<div class="listHiddenField pull-left" style="width: 10%">${list.seqNo}</div> 
 									<div class="listHiddenField pull-right" style="width: 20%">${list.rgstDay}</div>
-									<div class="listHiddenField pull-right" style="width: 20%">${list.userCode}</div>
+								 	<div class="listHiddenField pull-right" style="width: 20%">${list.weekDay}</div>
+									<div class="listHiddenField pull-right" style="width: 20%">${list.userNm}</div>
 										<c:url var="link" value="weekDetail">
 	                    					 <c:param name="weekCode" value="${list.weekCode}" />
 	                 					</c:url>
-									<div class="listTitle" style="width: 40%">
-										<a href="${link}"><c:out value="${list.content}"/></a>
+									<div class="listTitle" style="width: 20%">
+										<c:out value="${list.pjtNm}"/>
 									</div>
 								</div>
 							</c:forEach>

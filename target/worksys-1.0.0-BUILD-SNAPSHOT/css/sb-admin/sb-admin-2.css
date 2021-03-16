@@ -412,6 +412,14 @@ table.dataTable thead .sorting:after {
 list{
 	max-width: 1000px;
 }
+.list{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding: 5px 5px 0px 5px;
+	min-height: 35px;
+	text-align:left;
+}
 .listTitle, .showField, .listHiddenField{
 	overflow: hidden;
 	white-space: nowrap;
@@ -421,6 +429,14 @@ list{
 }
 .listHead, .listHiddenField, .textCenter{
 	text-align:center;
+}
+.listTit{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding: 5px 5px 0px 5px;
+	min-height: 35px;
+	text-align:left;
 }
 
 .listTitle{
@@ -436,6 +452,14 @@ list{
 	background-color: #F5F5F5; 
 }
 .listBody{
+	border-bottom: 1px solid #CCC;
+	width: 100%;
+}
+.listBody_ep{
+	border-bottom: 1px solid #CCC;
+	width: 100%;
+}
+.listBody_user{
 	border-bottom: 1px solid #CCC;
 	width: 100%;
 }
@@ -455,6 +479,42 @@ list{
 
 .field130{
 	width: 130px;
+}
+.pField5{
+	width: 5%;
+}
+.pField10{
+	width: 10%;
+}
+.pField15{
+	width: 15%;
+}
+.pField20{
+	width: 20%;
+}
+.pField30{
+	width: 30%;
+}
+.pField40{
+	width: 40%;
+}
+.pField50{
+	width: 50%;
+}
+.pField60{
+	width: 60%;
+}
+.pField70{
+	width: 70%;
+}
+.pField80{
+	width: 80%;
+}
+.pField90{
+	width: 90%;
+}
+.pField100 {
+	width: 100%;
 }
 
 @media screen and (max-width: 900px) {

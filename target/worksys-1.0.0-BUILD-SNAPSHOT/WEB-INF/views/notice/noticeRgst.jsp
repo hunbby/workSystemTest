@@ -10,7 +10,7 @@
 <script src="/js/datepicker/dayCalculation.js"></script>
 <!--  ckeditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
-
+<script src="/js/notice/notice.js"></script>
 <!--  시작 -->
 <title><s:message code="common.pageTitle" /></title>
 
@@ -39,8 +39,6 @@
 	window.onload = function() {
 		CKEDITOR.replace('content');
 	}
-	
-	
 </script>
 </head>
 
@@ -60,31 +58,15 @@
 
 			<!-- /.row -->
 			<div class="row">
-				<form id="form1" name="form1" role="form"
+				<form id="form1" name="form1" role="form" onsubmit="return false;"
 					action="/notice/noticeWrite" method="post">
 
 					<div class="panel panel-default">
 						<div class="panel-body">
 
-<%-- 							<div class="row form-group">
-								<label class="col-lg-2"><s:message code="notice.idx" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="idx" name="idx"
-										maxlength="30" value="<c:out value="${list.idx}"/>">
-								</div>
-							</div> --%>
-							<div class="row form-group">
-								<label class="col-lg-2"><s:message
-										code="notice.userCode" /></label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="userCode"
-										name="userCode" maxlength="255"
-										value="<c:out value="${list.userCode}"/>">
-								</div>
-							</div>
 
 							<div class="row form-group">
-								<label class="col-lg-2"><s:message code="notice.subject" /></label>
+								<label class="col-lg-2"><s:message code="notice.subject" /> (*) </label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control" id="subject"
 										name="subject" maxlength="255"
@@ -92,17 +74,14 @@
 								</div>
 							</div>
 						<div class="row form-group">
-							<label class="col-lg-2"><s:message code="notice.content" /></label>
+							<label class="col-lg-2"><s:message code="notice.content" /> (*) </label>
 								<div class="col-lg-8">
-								<textarea  id="content"  name="content"  rows="10" cols="80" value="${list.content}">
-           	 				</textarea>
-								
+								<textarea id="content"  name="content"  rows="10" cols="80" value="${list.content}"></textarea>
 								</div>
 						</div>
 						
 						</div>
-						<input type="submit" class="btn btn-outline btn-primary"
-							value="등록">
+					<input type="button"  class="btn btn-outline btn-primary pull-right field60" id="btnSave" onclick="notice(1)" value="저장">
 				</form>
 
 			</div>

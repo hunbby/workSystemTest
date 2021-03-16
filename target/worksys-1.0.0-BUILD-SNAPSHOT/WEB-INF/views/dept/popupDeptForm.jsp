@@ -16,11 +16,11 @@
                 <div class="modal-body">
 				<!-- /.row -->
 		            <div class="row">
-		            	<div class="col-lg-3" >
+		            	<div class="col-lg-3" id="treeContainer" >
 			            	 <div class="panel-body">
 				            	<div class="panel panel-default" > <!-- panel-body 로 바꿔볼 것 -->
 				                    <div style="max-height:400px; overflow:auto;" >
-								    	<div class="tree2">
+										<div class="tree2">
 										</div>
 									</div>
 								</div>
@@ -28,18 +28,18 @@
 		                </div> 
 		            	<div class="col-lg-9" >
 			                    <div class="panel-body" id="deptlist">
-						            <form id="form1" name="form1" role="form" method="post">
+						            <form id="form_dept" name="form1" role="form" method="post">
 										<div class="panel panel-default">
 											<div class="panel-body">
-												<input type="hidden" class="form-control" id="deptCode"
+												<input type="hidden" class="form-control" id="deptCode_popup"
 														name=deptCode maxlength="6"
-														value="" >
+														value="">
 												<div class="row form-group">
 													<label class="col-lg-3">
 													<s:message code="user.deptnm" /> (*)</label>
 													<div class="col-lg-9">
-														<input type="text" class="form-control" id="deptNm" name="deptNm"
-															maxlength="30" value="">
+														<input type="text" class="form-control" id="deptNm_popup" name="deptNm"
+															maxlength="14" value="" onkeyup="chkWordLength(this, 13)">
 													</div>
 												</div>
 												<div class="row form-group">
@@ -51,14 +51,14 @@
 															<input type="radio"
 																name="deptLV" value="1"
 																checked="checked"
-																id="checkLv1"
+																id="checkLv1_popup"
 																onclick="lvSelect(this.value)" >
 																Lv 1
 														</label> 
 														<label class="radio-inline">
 															<input type="radio" 
 																name="deptLV" value="2"
-																id="checkLv2"
+																id="checkLv2_popup"
 																onclick="lvSelect(this.value)" >
 																Lv 2
 														</label>
@@ -77,11 +77,11 @@
 												<div class="row form-group">
 													<label class="col-lg-3"><s:message code="common.etc" /></label>
 													<div class="col-lg-9">
-														<textarea class="form-control" id="deptRemarks" 
-														name="deptRemarks" ></textarea>
+														<textarea class="form-control" id="deptRemarks_popup" 
+														name="deptRemarks" onkeyup="chkWordLength(this, 254)" ></textarea>
 													</div>
 												</div>
-												<input type="hidden" id="deptCodeList" name="deptCodeList" value="">
+												<input type="hidden" id="deptCodeList_popup" name="deptCodeList" value="">
 											</div>
 										</div>
 									</form>
@@ -117,21 +117,4 @@
 		    </div>
 	  	</div>
 	  
-<script>
-	function myDeptSubmit(index) {
-		if(index == 1) {
-			$("#form1").attr('action', 'deptSave');
-		}
-		else if(index == 2) {
-			$("#form1").attr('action', 'deptEdit');
-		}
-		else if(index == 3) {
-			$("#form1").attr('action', 'deptDelete');
-		}
-		else if(index == 4) {
-			$("#form1").attr('action', 'deptListDelete');
-		}
-		$("#form1").submit();
-	}	
-</script>
 		

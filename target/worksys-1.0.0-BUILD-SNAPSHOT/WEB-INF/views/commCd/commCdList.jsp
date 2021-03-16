@@ -4,9 +4,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
-<%@ include file="/WEB-INF/include/header.jsp"%>
 <title>Project</title>
-
+<script src="/js/commCd/commCd.js"></script>
 <style>
 .col-gu {
 	float: left;
@@ -73,21 +72,29 @@
 								<s:message code="commcd.cdNm" />
 							</div>
 						</div>
-	
-						<c:forEach var="list" items="${list}" varStatus="status">
-							<div class="listBody">
-								<div class="listHiddenField pull-left" style="width: 20%">${list.cdId}</div>
-								<c:url var="link" value="commCdDetail">
-									<c:param name="cdId" value="${list.cdId}" />
-								</c:url>
-								<div class="listHiddenField pull-right" style="width: 20%">${list.cdOrder}</div>
-								<div class="listHiddenField pull-right" style="width: 20%">${list.userF}</div>
-								<div class="listHiddenField pull-right" style="width: 20%">${list.paCdId}</div>
-								<div class="listTitle" style="width: 20%">
-									<a href="${link}"><c:out value="${list.cdNm}" /></a>
+					<c:choose>
+						<c:when test="${fn:length(list) > 0}">
+							<c:forEach var="list" items="${list}" varStatus="status">
+								<div class="listBody" id="dbClick" title="${list.cdId}" ondblclick="test(this)">
+									<div class="listHiddenField pull-left" style="width: 20%">${list.cdId}</div>
+									<c:url var="link" value="commCdDetail">
+										<c:param name="cdId" value="${list.cdId}" />
+									</c:url>
+									<div class="listHiddenField pull-right" style="width: 20%">${list.cdOrder}</div>
+									<div class="listHiddenField pull-right" style="width: 20%">
+										<c:if test="${list.userF=='Y'}">사용
+										</c:if>
+										<c:if  test="${list.userF=='N'}">사용안함
+										</c:if>
+									</div>
+									<div class="listHiddenField pull-right" style="width: 20%">${list.paCdId}</div>
+									<div class="listTitle" style="width: 20%">
+										<c:out value="${list.cdNm}" />
+									</div>
 								</div>
-							</div>
-						</c:forEach>
+							</c:forEach>
+							</c:when>
+					</c:choose>
 					</div>
 				</div>
 	

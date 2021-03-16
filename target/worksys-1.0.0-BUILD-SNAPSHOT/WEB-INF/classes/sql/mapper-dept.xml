@@ -20,12 +20,12 @@
 	</resultMap>
 
 	<select id="deptTreeGrid" resultMap="TreeResult">
-		SELECT 
+		SELECT
 			DEPT_CODE AS KEY,
 			DEPT_NM AS TITLE,
 			DEPT_PARENT AS PARENT
 		FROM DEPT_MGMT
-		ORDER BY DEPT_NM
+		ORDER BY  DEPT_LOCATION DESC, DEPT_NM ASC
 	</select>
 	
   	<select id="deptParentInfo" resultMap="DeptResult">
@@ -56,14 +56,20 @@
 			,DEPT_PARENT
 			,RGST_DAY
 			,DEPT_REMARKS
+			<if test = "deptLV == 1">
+			, DEPT_LOCATION
+			</if>
 			)
 		VALUES (
-			'DE'||lpad(DEPT_SEQ.nextval,4,0)
+			TO_CHAR(SYSTIMESTAMP, 'YYMMDDHH24MISSFF5')
 			,#{deptNm}
 			,#{deptLV}
 			,#{deptParent}
-			,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+			,SYSDATE
 			,#{deptRemarks}
+			<if test = "deptLV == 1">
+			, 1
+			</if>
 			)
 	</insert>
 	
@@ -81,11 +87,10 @@
 	<update id="updateDept" parameterType="DeptVO">
         UPDATE DEPT_MGMT 
         SET 
-            DEPT_CODE     	= #{deptCode},
             DEPT_NM       	= #{deptNm},
             DEPT_LV  		= #{deptLV},
             DEPT_PARENT     = #{deptParent},
-            RGST_DAY    	= TO_CHAR(SYSDATE, 'YYYYMMDDHH24miss'),
+            RGST_DAY    	= SYSDATE,
             DEPT_REMARKS 	= #{deptRemarks}
         WHERE DEPT_CODE 	= #{deptCode}
 	</update>

@@ -4,7 +4,7 @@
 
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/work/week"><s:message code="common.projectTitle"/></a>
+                <a class="navbar-brand" href="/main/mainList"><s:message code="common.projectTitle"/></a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -46,7 +46,6 @@
 	                    </a>
 	                    <ul class="dropdown-menu dropdown-user">
 	                        <li><a href="memberForm"><i class="fa fa-user fa-fw"></i> <c:out value="${sessionScope.userNm}"/></a></li>
-	                        <li><a href="searchMember"><i class="fa fa-users fa-fw"></i> <s:message code="memu.users"/></a></li>
 	                        <li class="divider"></li>
 	                        <li><a href="/memberLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
 	                        </li>
@@ -88,23 +87,24 @@
 	                        <a href="/work/week"><i class="fa fa-files-o fa-fw"></i> <s:message code="memu.week"/></a>
 	                   </li>
                         <li>
-                            <a href="/projectList"><i class="fa fa-files-o fa-fw"></i> <s:message code="project.title"/></a>
+                            <a href="/projectMgmt"><i class="fa fa-files-o fa-fw"></i> <s:message code="project.title"/></a>
                         </li>
                         <li>
-                            <a href="/enterpriseList"><i class="fa fa-files-o fa-fw"></i> <s:message code="enterprise.title"/></a>
-                        </li>
-                         <li>
-                            <a href="/notice/noticeList"><i class="fa fa-files-o fa-fw"></i> <s:message code="notice.notice"/></a>
+                            <a href="/enterprisePage"><i class="fa fa-files-o fa-fw"></i> <s:message code="enterprise.title"/></a>
                         </li>
 
+
                         <!-- 관리자 권한 -->
-                        <c:if test='${sessionScope.userId == "tt"}'>
+                        <c:if test="${sessionScope.userAuth >= 200}">
 	                        <li>
-	                            <a href="#"> <s:message code="memu.admin"/></a>
+	                            <a href="/notice/noticePage"><i class="fa fa-files-o fa-fw"></i> <s:message code="notice.notice"/></a>
 	                        </li>
-	                        <li>
-	                            <a href="adBoardGroupList"><i class="fa fa-files-o fa-fw"></i> <s:message code="memu.board"/></a>
-	                        </li>
+<!-- 	                        <li> -->
+<%-- 	                            <a href="#"> <s:message code="memu.admin"/></a> --%>
+<!-- 	                        </li> -->
+<!-- 	                        <li> -->
+<%-- 	                            <a href="adBoardGroupList"><i class="fa fa-files-o fa-fw"></i> <s:message code="memu.board"/></a> --%>
+<!-- 	                        </li> -->
  	                        <li>
 	                            <a href="/deptMgmt"><i class="fa fa-sitemap fa-fw"></i> <s:message code="memu.organ"/></a>
 	                        </li> 

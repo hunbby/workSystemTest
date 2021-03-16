@@ -3,25 +3,45 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
 <script>
-/* 	var selectedNode = null;
+$(function () {
+	var totalPageCnt = ${totalPageCnt}
+	//console.log(totalPageCnt);
+	pagingSertting(1, totalPageCnt)
+});
 
-function fn_searchEnterprise() {
-	if ( ! chkInputValue("#keyword4Users", "<s:message code="common.keyword"/>")) return false;
-	
-    $.ajax({
-    	url: "popupUsers4Users",
-		type: "post", 
-    	data: { searchKeyword : $("#keyword4Users").val() }    	
-    }).success(function(result){
-    			$("#userlist4Users").html(result);
-		}    		
-    );
-} 검색 아작스 예제 */
+function pagingSertting(pageNumber, totalPageCnt) {
+	$('#weekPopupPjtPaging').bootpag({
+		total: totalPageCnt,
+		page: pageNumber,
+		maxVisible: 5,
+		leaps: true,
+		firstLastUse: true,
+		first: '←',
+		last: '→',
+		wrapClass: 'pagination',
+		activeClass: 'active',
+		disabledClass: 'disabled',
+		nextClass: 'next',
+		prevClass: 'prev',
+		lastClass: 'last',
+		firstClass: 'first'
+	}).on("page", function(event, num){
+	    console.log("Page " + num);
+
+	}); 
+}
+
 	$('.listBody').click(function() {
-		$('#pjtNm').attr('value', $(this).children().eq(5).attr('title'));
-		$('#pjtCode').attr('value', $(this).children().eq(0).attr('title'));
+		$('#pjtCode').attr('value', $(this).children().eq(0).attr('title')); //프로젝트코드
+		$('#pjtNm2').attr('value', $(this).children().eq(5).attr('title')); //프로젝트명
+		$('#epMgmtNm').attr('value', $(this).children().eq(3).attr('title')); //업체명
+		$('#pjtTermFrom').attr('value', $(this).children().eq(2).attr('title'));
 		$('#popupProject').modal('hide');
-		console.log($(this).children().eq(5).attr('title'));
+		console.log($('#pjtCode').val());
+		console.log($('#pjtNm2').val());
+		console.log($('#epMgmtNm').val());
+		console.log($('#pjtTermFrom').val());
+		console.log($('#popupProject').val());
 	});
 
 </script>    
@@ -46,12 +66,12 @@ function fn_searchEnterprise() {
             <div class="panel panel-default"> 
                <div class="panel-body ">
                <div class="listHead">
-                  <div class="listHiddenField pull-left " style="width: 10%"><s:message code="project.cd"/></div>
+                  <div class="listHiddenField pull-left "  style="display:none"><s:message code="project.cd"/></div>
                   <div class="listHiddenField pull-right " style="width: 10%"><s:message code="board.date"/></div>
-                  <div class="listHiddenField pull-right " style="width: 30%"><s:message code="project.term"/></div>
+                  <div class="listHiddenField pull-right " style="width: 20%"><s:message code="project.term"/></div>
                   <div class="listHiddenField pull-right " style="width: 10%"><s:message code="project.usernm"/></div>
-                  <div class="listHiddenField pull-right " style="width: 10%"><s:message code="enterprise.prtitle"/></div>
-                  <div class="listTitle " style="width: 30%"><s:message code="project.prtitle"/></div>
+                  <div class="listHiddenField pull-right " style="width: 40%"><s:message code="enterprise.prtitle"/></div>
+                  <div class="listTitle " ><s:message code="project.prtitle"/></div>
                </div>
 	          <c:if test="${list.size()==0}">
 	            <div class="listBody height200">
@@ -60,14 +80,17 @@ function fn_searchEnterprise() {
 	         
 	         <c:forEach var="list" items="${list}" varStatus="status">
 	            <div class="listBody" >
-	               <div class="listHiddenField pull-left textCenter" style="width: 10%"
+	            
+ 	               <div class="listHiddenField pull-left textCenter" style="display:none"
 		               title="<c:out value="${list.pjtCode}" />">
 		               		  <c:out value="${list.pjtCode}"/>
-	               </div>
+	               </div> 
 	               <div class="listHiddenField pull-right textCenter" style="width: 10%">
 	               				<c:out value="${list.rgstDay}"/></div>
-	               <div class="listHiddenField pull-right textCenter" style="width: 30%">
-	               				<c:out value="${list.pjtTermFrom} ~ ${list.pjtTermTo}"/></div>
+	               <div class="listHiddenField pull-right textCenter" style="width: 30%"
+	               	title="<c:out value="${list.pjtTermFrom} ~ ${list.pjtTermTo}" />">
+	               			<c:out value="${list.pjtTermFrom} ~ ${list.pjtTermTo}" />
+	               	</div>
 	               <div class="listHiddenField pull-right textCenter" style="width: 10%"
 	               	 title="<c:out value="${list.userNm}" />">
 	               	 		<c:out value="${list.userNm}"/>
@@ -84,7 +107,7 @@ function fn_searchEnterprise() {
 	            </c:forEach>
                </div>  
           </div>
-
+			<div id="weekPopupPjtPaging"></div>
 			<c:if test="${list.size()==0}">
 				<div class="listBody height200"></div>
 			</c:if>

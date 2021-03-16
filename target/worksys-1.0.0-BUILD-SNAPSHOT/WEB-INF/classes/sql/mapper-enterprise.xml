@@ -8,6 +8,7 @@
         <result property="epMgmtNm" column="EP_MGMT_NM" />
         <result property="state" column="STATE" />
         <result property="rgstDay" column="RGST_DAY" />
+        <result property="seqNo" column="SEQ_NO" />
 	</resultMap>
 
 	<insert id="insertEnterprise" parameterType="EnterpriseVO">
@@ -20,7 +21,7 @@
             MODI_DT
         ) 
         VALUES (
-            'EP'||lpad(EP_SEQ.nextval,4,0),
+            TO_CHAR(SYSTIMESTAMP, 'YYMMDDHH24MISSFF5'),
             #{epNm},
             #{epMgmtNm},
             #{state},
@@ -29,14 +30,31 @@
         )
 	</insert>
 
-    <select id="listEnterprise" resultMap="EnterpriseResult">
+    <select id="listEnterprise" resultMap="EnterpriseResult" parameterType="map">
+	    SELECT 
+			 SEQ_NO
+            , EP_CODE
+            , EP_NM
+            , EP_MGMT_NM
+            , RGST_DAY
+		FROM 
+		(
         SELECT
+            ROW_NUMBER() OVER (ORDER BY RGST_DAY) SEQ_NO,
             EP_CODE ,
             EP_NM ,
             EP_MGMT_NM ,
             TO_CHAR(RGST_DAY,'YYYY-MM-DD HH24:MI:SS') AS  RGST_DAY 
         FROM EP_MGMT
-        ORDER BY RGST_DAY DESC
+		)
+		WHERE SEQ_NO BETWEEN #{pageStart} AND #{pageEnd}
+		ORDER BY SEQ_NO DESC
+    </select>
+    
+    <select id="listEnterpriseCnt" resultType="int">
+    	SELECT
+            COUNT(*)
+        FROM EP_MGMT
     </select>
 
     <select id="getEnterpriseInfo"  parameterType="EnterpriseVO" resultMap="EnterpriseResult">

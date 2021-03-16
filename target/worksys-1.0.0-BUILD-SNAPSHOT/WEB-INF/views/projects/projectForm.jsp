@@ -1,97 +1,23 @@
-<%@ include file="/WEB-INF/include/header.jsp"%>
-<title><s:message code="common.pageTitle" /></title>
-
-<link href="js/datepicker/datepicker.css" rel="stylesheet"
-	type="text/css">
-<script src="js/datepicker/bootstrap-datepicker.js"></script>
-<script src="js/datepicker/dayCalculation.js"></script>
-
-<script>
-	window.onload = function() {
-		//업체 선택
-		$('#enterpriseSearch, #enterpriseSearch2').on('click', function() {
-			$.ajax({
-				url : '/popupEnterprise',
-				type : 'post'
-			}).success(function(result) {
-				$('#popupEnterprise').html(result);
-			});
-			$('#popupEnterprise').modal('show');
-		});
-		//사용자 선택(프로젝트 담당자)
-		$('#userNm').on('click', function() {
-			$.ajax({
-				url : '/popupUserList',
-				type : 'post'
-			}).success(function(result) {
-				$('#popupUserList').html(result);
-			});
-			$('#popupUserList').modal('show');
-		});
-	}
-	$(document).ready(function(){
-		var day1 = $("#prstartdate" ).datepicker().val();
-		var day2 =$("#prenddate" ).datepicker().val();
-		$('#termD').attr('value',(calDateRange(day1,day2)+1));
-		$('#termM').attr('value',(Math.floor(calMonthRange(day1,day2))));		  
-	});
-
-	function mySubmit(index) {
-		if (index == 1) {
-			$("#form1").attr('action', 'projectSave');
-		}
-		if (index == 2) {
-			$("#form1").attr('action', 'projectEdit');
-		}
-		if (index == 3) {
-			$("#form1").attr('action', 'projectDelete');
-		}
-		$("#form1").submit();
-	}
-	
-</script>
-
-</head>
-
-<body>
-
-	<div id="wrapper">
-
-		<jsp:include page="../common/navigation.jsp" />
-
-		<div id="page-wrapper">
-			<div class="row">
-				<div class="col-lg-12">
-					<h1 class="page-header">
-						<i class="fa fa-gear fa-fw"></i>
-						<s:message code="project.title" />
-					</h1>
-				</div>
-				<!-- /.col-lg-12 -->
-			</div>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
 			<!-- /.row -->
 			<div class="row">
-				<form id="form1" name="form1" role="form" method="post">
+				<form id="form_pjt" name="form1" role="form" method="post">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<c:if test="${projectInfo.pjtCode != null}">
-							<div class="row form-group">
-								<label class="col-lg-2 "><s:message code="project.cd" /> (*)</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control" id="pjtCode"
-										name="pjtCode" maxlength="6"
-										value="<c:out value="${projectInfo.pjtCode}"/>"
-										readonly>
-								</div>
+							<div class="row form-group" id="pjtCodeTogle">
+							<input type="hidden" class="form-control" id="pjtCode_popup" name="pjtCode" maxlength="6">
 							</div>
-							</c:if>
+
 							<div class="row form-group">
 								<label class="col-lg-2"><s:message
 										code="project.prtitle" /> (*)</label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="pjtNm" name="pjtNm"
-										maxlength="30" value="<c:out value="${projectInfo.pjtNm}"/>">
+									<input type="text" class="form-control" id="pjtNm_popup" name="pjtNm"
+										maxlength="30" value="" onkeyup="chkWordLength(this, 29)">
 								</div>
 							</div>
 							<div class="row form-group">
@@ -100,26 +26,26 @@
 								<div class="col-lg-2">
 									<input type="text" class="form-control enterpriseSearch"
 										id="enterpriseSearch" name="epNm"
-										value="<c:out value="${projectInfo.epNm}"/>" readonly>
-									<input type="hidden" id="epCode" name="epCode"
-										value="<c:out value="${projectInfo.epCode}"/>">
+										value="" readonly>
+									<input type="hidden" id="epCode_popup" name="epCode"
+										value="">
 								</div>
 								<label class="col-lg-2 textCenter"><s:message
 										code="enterprise.usernm" /> (*)</label>
 								<div class="col-lg-2">
 									<input type="text" class="form-control enterpriseSearch"
 										id="enterpriseSearch2" name="epMgmtNm"
-										value="<c:out value="${projectInfo.epMgmtNm}"/>" readonly>
+										value="" readonly>
 								</div>
 							</div>
 							<div class="row form-group">
 								<label class="col-lg-2"><s:message code="project.usernm" /> (*)</label>
 								<div class="col-lg-8">
-									<input type="text" class="form-control" id="userNm"
-										name="userNm" value="<c:out value="${projectInfo.userNm}"/>"
+									<input type="text" class="form-control" id="userNmSearch"
+										name="userNm" value=""
 										readonly> 
-									<input type="hidden" id="userCode" name="userCode"
-										value="<c:out value="${projectInfo.userCode}"/>">
+									<input type="hidden" id="userCode_popup" name="userCode"
+										value="">
 								</div>
 							</div>
 							<div class="row form-group">
@@ -127,12 +53,12 @@
 								<div class="col-lg-2">
 									<input class="form-control" size="16" id="prstartdate"
 										name="pjtTermFrom" type="text"
-										value="<c:out value="${projectInfo.pjtTermFrom}"/>" readonly>
+										readonly>
 								</div>
 								<div class="col-lg-2">
 									<input class="form-control" size="16" id="prenddate"
 										name="pjtTermTo" type="text"
-										value="<c:out value="${projectInfo.pjtTermTo}"/>" readonly>
+										readonly>
 								</div>
 							</div>
 							
@@ -158,70 +84,40 @@
 								<label class="col-lg-2"><s:message
 										code="project.participation" /></label>
 								<div class="col-lg-2">
-									<input type="number" class="form-control" id="pjtParti" name="pjtParti"
-										maxlength="30" value="<c:out value="${projectInfo.pjtParti}"/>">
+									<input type="number" class="form-control" id="pjtParti_popup" name="pjtParti"
+										maxlength="30" min="0" value="0">
 								</div>
 							</div>
 						</div>
 					</div>
 					<input type="button" class="btn btn-outline btn-primary"
-						onclick="location.href='/projectList'"
-						value="<s:message code="board.list"/>"></input>
-					<c:if test="${projectInfo.pjtCode == null}">
-						<button class="btn btn-outline btn-primary pull-right field60"
-							onclick="mySubmit(1)">
+						id="btnBack_pjtList"
+						value="<s:message code="board.list"/>" />
+
+					<button class="btn btn-outline btn-primary pull-right field60"
+							 id="btnPjtSave">
 							<s:message code="common.btnSave" />
-						</button>
-					</c:if>
-					<c:if test="${projectInfo.pjtCode != null}">
-						<button class="btn btn-outline btn-primary pull-right field60"
-							onclick="mySubmit(2)">
+					</button>
+					<button class="btn btn-outline btn-primary pull-right field60"
+							 id="btnPjtUpdate">
 							<s:message code="common.btnUpdate" />
-						</button>
-						<button class="btn btn-outline btn-primary pull-right field60"
-							onclick="mySubmit(3)">
+					</button>
+					<button class="btn btn-outline btn-primary pull-right field60"
+							 id="btnPjtDelete">
 							<s:message code="common.btnDelete" />
-						</button>
-					</c:if>
+					</button>
+
 				</form>
 
 			</div>
-			<!-- /.row -->
-		</div>
-		<!-- /#page-wrapper -->
 
-	</div>
 	<!-- /#wrapper -->
 	<div id="popupEnterprise" class="modal fade bs-example-modal-lg"
-		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
+		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<%@ include file="./popupEnterprise.jsp" %>
+	</div>
 	<div id="popupUserList" class="modal fade bs-example-modal-lg"
-		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"></div>
-		
-	<script> 
-		var checkin = $('#prstartdate').datepicker(
-		).on('changeDate', function(ev) {
-			var newDate = new Date(ev.date)
-		  	//newDate.setDate(newDate.getDate() + 1);
-		  	checkout.setValue(newDate);
-		  
-		  	checkin.hide();
-		  	$('#prenddate')[0].focus();
-		}).data('datepicker');
-		
-		var checkout = $('#prenddate').datepicker({
-		  	onRender: function(date) {
-		    return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
-		  }
-		}).on('changeDate', function(ev) {
-		 	checkout.hide();
-			var day1 = $("#prstartdate").datepicker().val();
-			var day2 =$("#prenddate").datepicker().val();
-			if(day1 != null && day2 != null) {				
-				$('#termD').attr('value',(calDateRange(day1,day2)+1));
-				$('#termM').attr('value',(Math.floor(calMonthRange(day1,day2))));
-			}
-		}).data('datepicker');
-	</script>
-</body>
+		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<%@ include file="./popupUserList.jsp" %>
+	</div>
 
-</html>
